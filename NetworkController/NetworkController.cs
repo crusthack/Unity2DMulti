@@ -1,25 +1,28 @@
-﻿using NetworkController.Message;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.Concurrent;
+using System.Threading;
 using System.Net;
 using System.Net.Sockets;
+using NetworkController.Message;
 
 namespace NetworkController
 {
-    public class NetworkController<T> where T : BaseMessage, IMessageParser<T>
+    public class NetworkController<T> where T : BaseMessage
     {
         enum NetworkState { None, Client, Server }
         NetworkState State = NetworkState.None;
         Socket _Socket;
-        Int32 BufferSize = T.GetMaxSize() * 10;
+        Int32 BufferSize = 1024 * 10;
 
-        BlockingCollection<Tuple<SocketContext<T>, T>> ReceiveMessageQueue = new();
+        BlockingCollection<Tuple<SocketContext<T>, T>> ReceiveMessageQueue = new BlockingCollection<Tuple<SocketContext<T>, T>>();
 
-        SocketContext<T>? ClientContext;
-        ConcurrentStack<SocketContext<T>> ContextQueue = new();
-        ConcurrentDictionary<UInt32, SocketContext<T>> ConnectedContext = new();
+        SocketContext<T> ClientContext = null;
+        ConcurrentStack<SocketContext<T>> ContextQueue = new ConcurrentStack<SocketContext<T>>();
+        ConcurrentDictionary<UInt32, SocketContext<T>> ConnectedContext = new ConcurrentDictionary<UInt32, SocketContext<T>>();
 
-        public event Action<SocketContext<T>>? OnConnect;
-        public event Action<SocketContext<T>>? OnDisconnect;
+        public event Action<SocketContext<T>> OnConnect;
+        public event Action<SocketContext<T>> OnDisconnect;
 
         UInt32 NextSessionID = 0;
 
@@ -36,6 +39,7 @@ namespace NetworkController
         public NetworkController(Socket socket, int bufferSize)
         {
             _Socket = socket;
+            BufferSize = bufferSize;
         }
 
         public void SetReceiveBufferSize(int size)
@@ -72,20 +76,20 @@ namespace NetworkController
 
         SocketContext<T> GetSocketContext()
         {
-            if (ContextQueue.TryPop(out var context))
+            if (ContextQueue.TryPop(out var ctx))
             {
-                return context;
+                return ctx;
             }
 
             var c = new SocketContext<T>(BufferSize);
-            c.OnReceiveMessage += (context, message) =>
+            c.OnReceiveMessage += (sender, message) =>
             {
-                ReceiveMessageQueue.Add(new Tuple<SocketContext<T>, T>(context, message));
+                ReceiveMessageQueue.Add(new Tuple<SocketContext<T>, T>(sender, message));
             };
 
-            c.OnDisconnect += (context) =>
+            c.OnDisconnect += (sender) =>
             {
-                SocketDisconnected(context);
+                SocketDisconnected(sender);
             };
 
             return c;
@@ -97,7 +101,11 @@ namespace NetworkController
             {
                 throw new Exception("Disconnect(): NetworkController is not connected as a client.");
             }
-            ClientContext!.Disconnect();
+            if (ClientContext == null)
+            {
+                throw new Exception("Disconnect(): No client context available.");
+            }
+            ClientContext.Disconnect();
             State = NetworkState.None;
         }
 
@@ -122,7 +130,7 @@ namespace NetworkController
         {
             _Socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             _Socket.Bind(endPoint);
-            _Socket.Listen();
+            _Socket.Listen(100);
 
             var args = new SocketAsyncEventArgs();
             args.Completed += (s, e) =>
@@ -151,12 +159,12 @@ namespace NetworkController
             State = NetworkState.None;
         }
 
-        public T GetMessage(CancellationToken cancellationToken = default)
+        public T GetMessage(CancellationToken cancellationToken = default(CancellationToken))
         {
             return ReceiveMessageQueue.Take(cancellationToken).Item2;
         }
 
-        public T GetMessage(out SocketContext<T> context, CancellationToken cancellationToken = default)
+        public T GetMessage(out SocketContext<T> context, CancellationToken cancellationToken = default(CancellationToken))
         {
             var tuple = ReceiveMessageQueue.Take(cancellationToken);
             context = tuple.Item1;
@@ -174,7 +182,12 @@ namespace NetworkController
             {
                 throw new Exception("SendMessage: NetworkController is not connected as a client.");
             }
-            ClientContext!.SendMessage(message);
+
+            if (ClientContext == null)
+            {
+                throw new Exception("SendMessage: No client context available.");
+            }
+            ClientContext.SendMessage(message);
         }
 
         public void SendMessageTo(UInt32 sessionID, T message)
@@ -202,10 +215,14 @@ namespace NetworkController
             }
         }
 
-        void CompletedAccept(object? sender, SocketAsyncEventArgs e)
+        void CompletedAccept(object sender, SocketAsyncEventArgs e)
         {
             var clientSocket = e.AcceptSocket;
-            var remoteEndPoint = clientSocket!.RemoteEndPoint as IPEndPoint;
+            if (clientSocket == null)
+            {
+                return;
+            }
+            var remoteEndPoint = clientSocket.RemoteEndPoint as IPEndPoint;
             if (remoteEndPoint == null)
             {
                 return;
@@ -216,10 +233,10 @@ namespace NetworkController
                 NextSessionID++;
             }
             ConnectedContext[NextSessionID] = context;
-            context.Reset(NextSessionID++, clientSocket, remoteEndPoint!.Address, (UInt16)remoteEndPoint.Port);
+            context.Reset(NextSessionID++, clientSocket, remoteEndPoint.Address, (UInt16)remoteEndPoint.Port);
             context.StartReceive();
 
-            OnConnect?.Invoke(context);
+            if (OnConnect != null) OnConnect(context);
 
             StartAccept(e);
         }

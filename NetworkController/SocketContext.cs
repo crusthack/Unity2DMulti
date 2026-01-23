@@ -5,17 +5,19 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Reflection;
+using System.Threading;
 
 namespace NetworkController
 {
-    public class SocketContext<T> where T : BaseMessage, IMessageParser<T>
+    public class SocketContext<T> where T : BaseMessage
     {
-        Socket? Socket = null;
+        Socket Socket = null;
         SocketAsyncEventArgs SendArgs;
         SocketAsyncEventArgs RecvArgs;
 
         public UInt32 SessionID;
-        public IPAddress? RemoteAddress = null;
+        public IPAddress RemoteAddress = null;
         public UInt16 RemotePort = 0;
 
         byte[] RecvBuf;
@@ -24,20 +26,20 @@ namespace NetworkController
 
         byte[] SendBuf;
         int SendBufDataSize = 0;
-        bool IsSending;
-        bool IsConnected = false;
-        ConcurrentQueue<T> SendMessageQueue = new();
-        T? MessageForSend;
+        int IsSending;
+        int IsConnected = 0;
+        ConcurrentQueue<T> SendMessageQueue = new ConcurrentQueue<T>();
+        T MessageForSend = default(T);
 
-        public event Action<SocketContext<T>, T>? OnReceiveMessage;
-        public event Action<SocketContext<T>>? OnDisconnect;
+        public event Action<SocketContext<T>, T> OnReceiveMessage;
+        public event Action<SocketContext<T>> OnDisconnect;
 
         public SocketContext(Int32 bufferSize)
         {
             RecvBuf = new byte[bufferSize];
             SendBuf = new byte[bufferSize];
-            SendArgs = new();
-            RecvArgs = new();
+            SendArgs = new SocketAsyncEventArgs();
+            RecvArgs = new SocketAsyncEventArgs();
 
             SendArgs.UserToken = this;
             SendArgs.Completed += (s, e) =>
@@ -56,7 +58,7 @@ namespace NetworkController
 
         public void Reset(UInt32 sessionID, Socket socket, IPAddress ip, UInt16 port)
         {
-            if (Interlocked.CompareExchange(ref IsConnected, true, false) == true)
+            if (Interlocked.CompareExchange(ref IsConnected, 1, 0) == 1)
             {
                 throw new Exception("Already Connected");
             }
@@ -72,26 +74,26 @@ namespace NetworkController
 
         public void Disconnect()
         {
-            if (Interlocked.CompareExchange(ref IsConnected, false, true) == false)
+            if (Interlocked.CompareExchange(ref IsConnected, 0, 1) == 0)
             {
                 return;
             }
-            Socket!.Shutdown(SocketShutdown.Both);
-            Socket!.Close();
-            OnDisconnect?.Invoke(this);
+            try { Socket.Shutdown(SocketShutdown.Both); } catch { }
+            try { Socket.Close(); } catch { }
+            if (OnDisconnect != null) OnDisconnect(this);
         }
 
         public void StartReceive()
         {
             RecvArgs.SetBuffer(RecvBuf, RecvBufOffset, RecvBuf.Length - (RecvBufOffset + RecvBufDataSize));
 
-            if (!Socket!.ReceiveAsync(RecvArgs))
+            if (!Socket.ReceiveAsync(RecvArgs))
             {
                 CompletedReceive(RecvArgs.BytesTransferred);
             }
         }
 
-        public void CompletedReceive(int bytesTransferred)
+        void CompletedReceive(int bytesTransferred)
         {
             while (true)
             {
@@ -105,7 +107,8 @@ namespace NetworkController
 
                 while (true)
                 {
-                    int parsed = T.Parse(RecvBuf, RecvBufDataSize, out T? message);
+                    T messageLocal = default(T);
+                    int parsed = ParserInvoker<T>.Parse(RecvBuf, RecvBufDataSize, out messageLocal);
 
                     if (parsed < 0)
                     {
@@ -117,12 +120,12 @@ namespace NetworkController
                         return;
                     }
 
-                    if (message == null)
+                    if (messageLocal == null)
                     {
                         break;
                     }
 
-                    OnReceiveMessage?.Invoke(this, message);
+                    if (OnReceiveMessage != null) OnReceiveMessage(this, messageLocal);
 
                     RecvBufOffset += parsed;
                     RecvBufDataSize -= parsed;
@@ -134,7 +137,7 @@ namespace NetworkController
                     RecvBufOffset = 0;
                 }
                 // 버퍼에 메시지 하나를 수신할 공간이 부족하면 현재 유효 데이터를 앞으로 옮기고 오프셋 이동
-                else if (RecvBuf.Length - (RecvBufOffset + RecvBufDataSize) < T.GetMaxSize())
+                else if (RecvBuf.Length - (RecvBufOffset + RecvBufDataSize) < ParserInvoker<T>.GetMaxSize())
                 {
                     Console.WriteLine($"{RecvBuf.Length}, {RecvBufOffset}, {RecvBufDataSize}");
                     Buffer.BlockCopy(RecvBuf, RecvBufOffset, RecvBuf, 0, RecvBufDataSize);
@@ -146,7 +149,7 @@ namespace NetworkController
                     RecvBuf.Length - (RecvBufOffset + RecvBufDataSize)
                 );
 
-                if (Socket!.ReceiveAsync(RecvArgs))
+                if (Socket.ReceiveAsync(RecvArgs))
                     return;
 
                 bytesTransferred = RecvArgs.BytesTransferred;
@@ -157,7 +160,7 @@ namespace NetworkController
         {
             SendMessageQueue.Enqueue(message);
 
-            if (Interlocked.CompareExchange(ref IsSending, true, false) == false)
+            if (Interlocked.CompareExchange(ref IsSending, 1, 0) == 0)
             {
                 TrySend();
             }
@@ -169,13 +172,15 @@ namespace NetworkController
             {
                 if (MessageForSend != null && MessageForSend.GetSize() < SendBuf.Length - SendBufDataSize)
                 {
-                    MessageForSend.Serialize(SendBuf.AsSpan(SendBufDataSize));
-                    SendBufDataSize += MessageForSend.GetSize();
-                    MessageForSend = null;
+                    var bytes = MessageForSend.Serialize();
+                    Buffer.BlockCopy(bytes, 0, SendBuf, SendBufDataSize, bytes.Length);
+                    SendBufDataSize += bytes.Length;
+                    MessageForSend = default(T);
                 }
                 if (MessageForSend == null)
                 {
-                    while (SendMessageQueue.TryDequeue(out var msg))
+                    T msg;
+                    while (SendMessageQueue.TryDequeue(out msg))
                     {
                         int size = msg.GetSize();
                         if (size > SendBuf.Length - SendBufDataSize)
@@ -184,16 +189,17 @@ namespace NetworkController
                             break;
                         }
 
-                        msg.Serialize(SendBuf.AsSpan(SendBufDataSize));
-                        SendBufDataSize += size;
+                        var bytes = msg.Serialize();
+                        Buffer.BlockCopy(bytes, 0, SendBuf, SendBufDataSize, bytes.Length);
+                        SendBufDataSize += bytes.Length;
                     }
                 }
 
                 if (SendBufDataSize == 0)
                 {
-                    Interlocked.Exchange(ref IsSending, false);
+                    Interlocked.Exchange(ref IsSending, 0);
 
-                    if (!SendMessageQueue.IsEmpty && Interlocked.CompareExchange(ref IsSending, true, false) == false)
+                    if (!SendMessageQueue.IsEmpty && Interlocked.CompareExchange(ref IsSending, 1, 0) == 0)
                     {
                         continue;
                     }
@@ -202,7 +208,7 @@ namespace NetworkController
 
                 SendArgs.SetBuffer(SendBuf, 0, SendBufDataSize);
 
-                bool pending = Socket!.SendAsync(SendArgs);
+                bool pending = Socket.SendAsync(SendArgs);
                 if (pending)
                 {
 
@@ -219,7 +225,7 @@ namespace NetworkController
             }
         }
 
-        public void CompletedSend(int bytesTransferred)
+        void CompletedSend(int bytesTransferred)
         {
             SendBufDataSize -= bytesTransferred;
 

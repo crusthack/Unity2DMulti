@@ -1,0 +1,57 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v10.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v10.0": {
+      "ClientConsole/1.0.0": {
+        "dependencies": {
+          "NetworkControllerLib": "1.0.0"
+        },
+        "runtime": {
+          "ClientConsole.dll": {}
+        }
+      },
+      "Google.Protobuf/3.33.4": {
+        "runtime": {
+          "lib/net5.0/Google.Protobuf.dll": {
+            "assemblyVersion": "3.33.4.0",
+            "fileVersion": "3.33.4.0"
+          }
+        }
+      },
+      "NetworkControllerLib/1.0.0": {
+        "dependencies": {
+          "Google.Protobuf": "3.33.4"
+        },
+        "runtime": {
+          "NetworkControllerLib.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "ClientConsole/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Google.Protobuf/3.33.4": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-8uRKKkDp+0Clqz1GqH6aTQtQsDJJyWhw9Owo1jsplIdNR7SIPehLVq4+5zccXkjOVbR6OcjEvL4MlrVSTme2IA==",
+      "path": "google.protobuf/3.33.4",
+      "hashPath": "google.protobuf.3.33.4.nupkg.sha512"
+    },
+    "NetworkControllerLib/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

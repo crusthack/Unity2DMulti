@@ -1,0 +1,11 @@
+C:\Users\crusthack\Documents\UnityProject\Unity2DMulti\NetworkController\bin\Release\netstandard2.0\NetworkControllerLib.deps.json
+C:\Users\crusthack\Documents\UnityProject\Unity2DMulti\NetworkController\bin\Release\netstandard2.0\NetworkControllerLib.dll
+C:\Users\crusthack\Documents\UnityProject\Unity2DMulti\NetworkController\bin\Release\netstandard2.0\NetworkControllerLib.pdb
+C:\Users\crusthack\Documents\UnityProject\Unity2DMulti\NetworkController\obj\Release\netstandard2.0\NetworkControllerLib.csproj.AssemblyReference.cache
+C:\Users\crusthack\Documents\UnityProject\Unity2DMulti\NetworkController\obj\Release\netstandard2.0\NetworkControllerLib.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\crusthack\Documents\UnityProject\Unity2DMulti\NetworkController\obj\Release\netstandard2.0\NetworkControllerLib.AssemblyInfoInputs.cache
+C:\Users\crusthack\Documents\UnityProject\Unity2DMulti\NetworkController\obj\Release\netstandard2.0\NetworkControllerLib.AssemblyInfo.cs
+C:\Users\crusthack\Documents\UnityProject\Unity2DMulti\NetworkController\obj\Release\netstandard2.0\NetworkControllerLib.csproj.CoreCompileInputs.cache
+C:\Users\crusthack\Documents\UnityProject\Unity2DMulti\NetworkController\obj\Release\netstandard2.0\NetworkControllerLib.sourcelink.json
+C:\Users\crusthack\Documents\UnityProject\Unity2DMulti\NetworkController\obj\Release\netstandard2.0\NetworkControllerLib.dll
+C:\Users\crusthack\Documents\UnityProject\Unity2DMulti\NetworkController\obj\Release\netstandard2.0\NetworkControllerLib.pdb

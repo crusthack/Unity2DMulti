@@ -26,7 +26,7 @@
       },
       "NetworkControllerLib/1.0.0": {
         "type": "project",
-        "framework": ".NETCoreApp,Version=v10.0",
+        "framework": ".NETStandard,Version=v2.0",
         "dependencies": {
           "Google.Protobuf": "3.33.4",
           "Google.Protobuf.Tools": "3.33.4"
@@ -113,9 +113,9 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\crusthack\\Documents\\UnityProject\\Unity2DMulti\\GameClientConsole\\GameClientConsole.csproj",
-      "projectName": "GameClientConsole",
-      "projectPath": "C:\\Users\\crusthack\\Documents\\UnityProject\\Unity2DMulti\\GameClientConsole\\GameClientConsole.csproj",
+      "projectUniqueName": "C:\\Users\\crusthack\\Documents\\UnityProject\\Unity2DMulti\\GameClientConsole\\ClientConsole.csproj",
+      "projectName": "ClientConsole",
+      "projectPath": "C:\\Users\\crusthack\\Documents\\UnityProject\\Unity2DMulti\\GameClientConsole\\ClientConsole.csproj",
       "packagesPath": "C:\\Users\\crusthack\\.nuget\\packages\\",
       "outputPath": "C:\\Users\\crusthack\\Documents\\UnityProject\\Unity2DMulti\\GameClientConsole\\obj\\",
       "projectStyle": "PackageReference",

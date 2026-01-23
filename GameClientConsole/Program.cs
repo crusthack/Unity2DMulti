@@ -40,21 +40,35 @@ namespace GameClientConsole
             });
 
             bool sendHeartbeat = false;
+            bool printHeartbeat = false;
             _ = Task.Run(() =>
             {
-                while (true)
+            while (true)
+            {
+                Thread.Sleep(1000);
+                if (sendHeartbeat)
                 {
-                    Thread.Sleep(1000);
-                    if (sendHeartbeat)
-                    {
-                        Netcon.SendMessage(new ProtobufMessage(new Protos.SystemMessage
+
+                        try
                         {
-                            Heartbeat = new Protos.Heartbeat
+                            Netcon.SendMessage(new ProtobufMessage(new Protos.SystemMessage
                             {
-                                Timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()
+                                Heartbeat = new Protos.Heartbeat
+                                {
+                                    Timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()
+                                }
                             }
+                            , ProtobufMessage.OpCode.System));
                         }
-                        , ProtobufMessage.OpCode.System));
+                        catch (Exception ex)
+                        {
+                            sendHeartbeat = false;
+                        }
+
+                        if (printHeartbeat)
+                        {
+                            Console.WriteLine("Heartbeat message sent.");
+                        }
                     }
                 }
             });
@@ -93,6 +107,7 @@ namespace GameClientConsole
                         }
                         , ProtobufMessage.OpCode.System));
                         break;
+
                     case "login":
                         Console.Write("Enter username: ");
                         var username = Console.ReadLine();
@@ -104,6 +119,9 @@ namespace GameClientConsole
                             }
                         },
                         ProtobufMessage.OpCode.System));
+                        break;
+                    case "l":
+                        printHeartbeat = !printHeartbeat;
                         break;
                     case "h":
                         if (sendHeartbeat)

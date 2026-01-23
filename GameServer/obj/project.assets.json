@@ -90,7 +90,7 @@
       },
       "NetworkControllerLib/1.0.0": {
         "type": "project",
-        "framework": ".NETCoreApp,Version=v10.0",
+        "framework": ".NETStandard,Version=v2.0",
         "dependencies": {
           "Google.Protobuf": "3.33.4",
           "Google.Protobuf.Tools": "3.33.4"

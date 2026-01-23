@@ -1,5 +1,5 @@
 <Solution>
-  <Project Path="GameClientConsole/GameClientConsole.csproj" Id="7fee7e28-f5f8-4792-897c-be13b52492f2" />
+  <Project Path="GameClientConsole/ClientConsole.csproj" Id="7fee7e28-f5f8-4792-897c-be13b52492f2" />
   <Project Path="GameServer/GameServer.csproj" />
   <Project Path="NetworkController/NetworkControllerLib.csproj" />
 </Solution>

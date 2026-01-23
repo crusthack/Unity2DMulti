@@ -1,11 +1,9 @@
-﻿using Google.Protobuf;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Text;
 
 namespace NetworkController.Message
 {
-    public class BaseMessage : IMessageParser<BaseMessage>
+    public class BaseMessage
     {
         string Payload;
 
@@ -28,17 +26,20 @@ namespace NetworkController.Message
         {
             return Encoding.UTF8.GetBytes(Payload);
         }
-        public virtual Int32 Serialize(Span<byte> buffer)
+        // compatibility helper: serialize into byte[] at offset
+        public virtual Int32 Serialize(byte[] buffer, int offset)
         {
-            if(buffer.Length < Encoding.UTF8.GetByteCount(Payload))
+            var bytes = Encoding.UTF8.GetBytes(Payload);
+            if (buffer.Length < offset + bytes.Length)
             {
                 throw new Exception("Buffer size is smaller than payload size.");
             }
 
-            return Encoding.UTF8.GetBytes(Payload, buffer);
+            Buffer.BlockCopy(bytes, 0, buffer, offset, bytes.Length);
+            return bytes.Length;
         }
 
-        public static int Parse(byte[] data, Int32 size, out BaseMessage? message)
+        public static int Parse(byte[] data, Int32 size, out BaseMessage message)
         {
             string m = Encoding.UTF8.GetString(data, 0, size);
             message = new BaseMessage(m);
@@ -49,15 +50,13 @@ namespace NetworkController.Message
 
     public interface IMessageParser<T>
     {
-        static abstract int Parse(byte[] data, int size, out T? message);
-
-        static abstract Int32 GetMaxSize();
+        int Parse(byte[] data, int size, out T message);
+        Int32 GetMaxSize();
     }
 
     public interface IMessageHeader
     {
-        static Int32 HeaderSize { get; }
-        abstract Int32 Serialize(Span<byte> buffer);
-        static abstract int Parse(byte[] buffer, int Size, out IMessageHeader? header);
+        Int32 Serialize(byte[] buffer, int offset);
+        // parsing is implemented by concrete headers
     }
 }

@@ -64,6 +64,16 @@ namespace GameServer
             Console.WriteLine($"Server start running, IP: 127.0.0.1, Port: 5000");
             IsRunning = true;
             token = new();
+            HeartbeatTask = new Task(async () =>
+            {
+                Console.WriteLine("Checking heartbeat");
+                while (!token.IsCancellationRequested)
+                {
+                    await Task.Delay(CheckInterval);
+                    CheckHeartbeat();
+                }
+                Console.WriteLine("Heartbeat task terminated");
+            });
             HeartbeatTask.RunSynchronously();
             ServerTask = Task.Run(() =>
             {

@@ -1,10 +1,11 @@
-﻿using Google.Protobuf;
-using System.Buffers.Binary;
+﻿using System;
+using System.Collections.Generic;
+using Google.Protobuf;
 using Protos;
 
 namespace NetworkController.Message
 {
-    public class ProtobufMessage : BaseMessage, IMessageParser<ProtobufMessage>
+    public class ProtobufMessage : BaseMessage
     {
         public enum OpCode : Int32
         {
@@ -37,23 +38,28 @@ namespace NetworkController.Message
         {
             var headerSize = ProtobufMessageHeader.HeaderSize;
             var payloadSize = Payload.CalculateSize();
-            byte[] buffer = new byte[headerSize + Payload.CalculateSize()];
+            byte[] buffer = new byte[headerSize + payloadSize];
 
-            var offset = Header.Serialize(buffer);
-            Payload.WriteTo(buffer.AsSpan<byte>(offset, payloadSize));
+            Header.Serialize(buffer, 0);
+            var payloadBytes = Payload.ToByteArray();
+            Buffer.BlockCopy(payloadBytes, 0, buffer, headerSize, payloadSize);
 
             return buffer;
         }
 
-        public override Int32 Serialize(Span<byte> buffer)
+        public Int32 Serialize(byte[] buffer, int offset)
         {
-            Header.Serialize(buffer);
-            Payload.WriteTo(buffer.Slice(ProtobufMessageHeader.HeaderSize, Payload.CalculateSize()));
+            var total = GetSize();
+            if (buffer.Length < offset + total) throw new ArgumentException("Buffer too small", nameof(buffer));
 
-            return GetSize();
+            Header.Serialize(buffer, offset);
+            var payloadBytes = Payload.ToByteArray();
+            Buffer.BlockCopy(payloadBytes, 0, buffer, offset + ProtobufMessageHeader.HeaderSize, payloadBytes.Length);
+
+            return total;
         }
 
-        public static int Parse(byte[] data, int size, out ProtobufMessage? msg)
+        public static int Parse(byte[] data, int size, out ProtobufMessage msg)
         {
             var offset = ProtobufMessageHeader.Parse(data, size, out var header);
             if (offset == -1)
@@ -68,14 +74,15 @@ namespace NetworkController.Message
             }
 
             var messageHeader = header as ProtobufMessageHeader;
-            if (size < ProtobufMessageHeader.HeaderSize + messageHeader!.PayloadSize)
+            if (size < ProtobufMessageHeader.HeaderSize + messageHeader.PayloadSize)
             {
                 msg = null;
                 return 0;
             }
 
-            var payload = ProtobufParserRegistry.Parse(
-                messageHeader.OpCode, new ReadOnlySpan<byte>(data, ProtobufMessageHeader.HeaderSize, messageHeader.PayloadSize));
+            var payloadBytes = new byte[messageHeader.PayloadSize];
+            Buffer.BlockCopy(data, ProtobufMessageHeader.HeaderSize, payloadBytes, 0, messageHeader.PayloadSize);
+            var payload = ProtobufParserRegistry.Parse(messageHeader.OpCode, payloadBytes);
             msg = new ProtobufMessage(payload, (OpCode)messageHeader.OpCode);
 
             return ProtobufMessageHeader.HeaderSize + messageHeader.PayloadSize;
@@ -104,19 +111,19 @@ namespace NetworkController.Message
             _TimeStamp = t;
             CheckKey = c;
         }
-        public int Serialize(Span<byte> buffer)
+        public int Serialize(byte[] buffer, int offset)
         {
-            if (buffer.Length < HeaderSize)
+            if (buffer.Length < offset + HeaderSize)
                 throw new ArgumentException("Buffer too small", nameof(buffer));
 
-            BinaryPrimitives.WriteInt32LittleEndian(buffer.Slice(0, 4), PayloadSize);
-            BinaryPrimitives.WriteInt32LittleEndian(buffer.Slice(4, 4), OpCode);
-            BinaryPrimitives.WriteInt64LittleEndian(buffer.Slice(8, 8), _TimeStamp);
-            BinaryPrimitives.WriteInt32LittleEndian(buffer.Slice(16, 4), CheckKey);
+            WriteInt32LE(buffer, offset + 0, PayloadSize);
+            WriteInt32LE(buffer, offset + 4, OpCode);
+            WriteInt64LE(buffer, offset + 8, _TimeStamp);
+            WriteInt32LE(buffer, offset + 16, CheckKey);
 
             return HeaderSize;
         }
-        static public int Parse(byte[] buffer, int size, out IMessageHeader? header)
+        static public int Parse(byte[] buffer, int size, out IMessageHeader header)
         {
             if (size < HeaderSize)
             {
@@ -124,10 +131,10 @@ namespace NetworkController.Message
                 return 0;
             }
 
-            BinaryPrimitives.TryReadInt32LittleEndian(new ReadOnlySpan<byte>(buffer, 0, 4), out Int32 payloadSize);
-            BinaryPrimitives.TryReadInt32LittleEndian(new ReadOnlySpan<byte>(buffer, 4, 4), out Int32 opCode);
-            BinaryPrimitives.TryReadInt64LittleEndian(new ReadOnlySpan<byte>(buffer, 8, 8), out Int64 timeStamp);
-            BinaryPrimitives.TryReadInt32LittleEndian(new ReadOnlySpan<byte>(buffer, 16, 4), out Int32 checkKey);
+            int payloadSize = ReadInt32LE(buffer, 0);
+            int opCode = ReadInt32LE(buffer, 4);
+            long timeStamp = ReadInt64LE(buffer, 8);
+            int checkKey = ReadInt32LE(buffer, 16);
             header = new ProtobufMessageHeader(payloadSize, opCode, timeStamp, checkKey);
             if (checkKey != CheckKey)
             {
@@ -136,19 +143,65 @@ namespace NetworkController.Message
 
             return HeaderSize;
         }
+
+        static void WriteInt32LE(byte[] buf, int offset, int value)
+        {
+            unchecked
+            {
+                buf[offset + 0] = (byte)(value);
+                buf[offset + 1] = (byte)(value >> 8);
+                buf[offset + 2] = (byte)(value >> 16);
+                buf[offset + 3] = (byte)(value >> 24);
+            }
+        }
+
+        static void WriteInt64LE(byte[] buf, int offset, long value)
+        {
+            unchecked
+            {
+                buf[offset + 0] = (byte)(value);
+                buf[offset + 1] = (byte)(value >> 8);
+                buf[offset + 2] = (byte)(value >> 16);
+                buf[offset + 3] = (byte)(value >> 24);
+                buf[offset + 4] = (byte)(value >> 32);
+                buf[offset + 5] = (byte)(value >> 40);
+                buf[offset + 6] = (byte)(value >> 48);
+                buf[offset + 7] = (byte)(value >> 56);
+            }
+        }
+
+        static int ReadInt32LE(byte[] buf, int offset)
+        {
+            unchecked
+            {
+                return (buf[offset + 0]) |
+                       (buf[offset + 1] << 8) |
+                       (buf[offset + 2] << 16) |
+                       (buf[offset + 3] << 24);
+            }
+        }
+
+        static long ReadInt64LE(byte[] buf, int offset)
+        {
+            unchecked
+            {
+                uint lo = (uint)ReadInt32LE(buf, offset);
+                uint hi = (uint)ReadInt32LE(buf, offset + 4);
+                return (long)((ulong)lo | ((ulong)hi << 32));
+            }
+        }
     }
 
     static class ProtobufParserRegistry
     {
-        static readonly Dictionary<Int32, MessageParser> Parsers = new()
-        {
-            { (Int32)ProtobufMessage.OpCode.System, SystemMessage.Parser},
-            { (Int32)ProtobufMessage.OpCode.Chatting, ChattingMessage.Parser },
+        static readonly Dictionary<Int32, Func<byte[], IMessage>> Parsers = new Dictionary<int, Func<byte[], IMessage>>() {
+            { (Int32)ProtobufMessage.OpCode.System, (b) => SystemMessage.Parser.ParseFrom(b) },
+            { (Int32)ProtobufMessage.OpCode.Chatting, (b) => ChattingMessage.Parser.ParseFrom(b) },
         };
 
-        public static IMessage Parse(Int32 opcode, ReadOnlySpan<byte> payload)
+        public static IMessage Parse(Int32 opcode, byte[] payload)
         {
-            return Parsers[opcode].ParseFrom(payload.ToArray());
+            return Parsers[opcode](payload);
         }
     }
 }
