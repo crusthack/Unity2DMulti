@@ -24,7 +24,12 @@ public class Loginpanel : MonoBehaviour
 
     public void OnClickLogin()
     {
+        if(GameManager.Instance.Session.IsLogin())
+        {
+            return;
+        }
         string name = IdInput.text;
+        LoginStatus.text = "Trying login...";
 
         // 유효성 검사
         if (string.IsNullOrEmpty(name))
@@ -32,7 +37,6 @@ public class Loginpanel : MonoBehaviour
             LoginStatus.text = "Please Input Your ID";
             return;
         }
-        LoginStatus.text = "Trying login...";
 
         GameManager.Instance.NetworkManager.Login(name);
     }

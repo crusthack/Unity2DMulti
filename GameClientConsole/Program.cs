@@ -1,5 +1,6 @@
 ﻿using NetworkController;
 using NetworkController.Message;
+using Protos;
 using System.Net;
 
 namespace GameClientConsole
@@ -32,9 +33,12 @@ namespace GameClientConsole
                     {
                         Console.WriteLine($"[{chatMessage.Username}]: {chatMessage.Message}");
                     }
-                    else if (message.Payload is Protos.SystemMessage)
+                    else if (message.Payload is Protos.SystemMessage system)
                     {
-
+                        if(SystemMessage.PayloadOneofCase.LoginResponse == system!.PayloadCase)
+                        {
+                            Console.WriteLine(system.LoginResponse.Message);
+                        }
                     }
                 }
             });
@@ -63,6 +67,7 @@ namespace GameClientConsole
                         catch (Exception ex)
                         {
                             sendHeartbeat = false;
+                            Console.WriteLine(ex.ToString());
                         }
 
                         if (printHeartbeat)

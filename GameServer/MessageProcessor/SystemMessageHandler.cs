@@ -30,7 +30,7 @@ namespace GameServer.MessageProcessor
                     break;
 
                 case SystemMessage.PayloadOneofCase.Heartbeat:
-                    HandleHeartbeat();
+                    HandleHeartbeat(session, msg.Heartbeat);
                     break;
             }
         }
@@ -41,8 +41,9 @@ namespace GameServer.MessageProcessor
             Server.LoginService.Login(session, loginRequest);
         }
 
-        void HandleHeartbeat()
+        void HandleHeartbeat(ClientSession session, Heartbeat heatbeat)
         {
+            Server.LoginService.Heartbeat(session, heatbeat);
         }
     }
 }

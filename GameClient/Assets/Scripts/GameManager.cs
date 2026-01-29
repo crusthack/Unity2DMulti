@@ -16,6 +16,9 @@ public class GameManager : MonoBehaviour
     public float TempScore;
 
     public NetworkManager NetworkManager;
+    MainMenuHandler MessageHandler;
+    public GameSession Session;
+
     void Awake()
     {
         if (Instance != null)
@@ -29,6 +32,7 @@ public class GameManager : MonoBehaviour
         Physics2D.queriesHitTriggers = false;
 
         saveManager = new SaveManager();
+        Session = new GameSession();
     }
 
     public void SaveGame()
@@ -54,6 +58,39 @@ public class GameManager : MonoBehaviour
         }
 
         return new GameData();
+    }
+
+    public void UpdateMessageHandler(MainMenuHandler messageHandler)
+    {
+        MessageHandler = messageHandler;
+    }
+}
+
+public class GameSession
+{
+    bool IsLoggedIn = false;
+    string Username = "";
+    
+    public bool IsLogin()
+    {
+        return IsLoggedIn; 
+    }
+
+    public void LoginSuccess(string username)
+    {
+        IsLoggedIn = true;
+        Username = username;
+    }
+
+    public void Logout()
+    {
+        IsLoggedIn = false;
+        Username = null;
+    }
+
+    public string GetUsername()
+    {
+        return Username;
     }
 }
 

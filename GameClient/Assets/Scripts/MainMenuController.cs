@@ -1,20 +1,11 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class MainMenu : MonoBehaviour
+public class MainMenuController : MonoBehaviour
 {
-    bool IsLogined = false;
-
     public GameObject LoginPanel;
-    void Start()
-    {
-        IsLogined = false;
-    }
-
-    void Update()
-    {
-
-    }
+    public TMP_Text Username;
 
     public void LoadSinglePlay()
     {
@@ -23,27 +14,20 @@ public class MainMenu : MonoBehaviour
 
     public void OnClickLogin()
     {
-        if (IsLogined)
-        {
-            Logout();
-        }
-        else
-        {
-            LoginPanel.SetActive(true);
-        }
+        LoginPanel.SetActive(true);
     }
 
     public void OnClickMultiPlay(int state)
     {
-        if(!IsLogined)
+        if (!GameManager.Instance.Session.IsLogin())
         {
             OnClickLogin();
             return;
         }
-        switch(state)
+        switch (state)
         {
             // dedicated server
-            case 0: 
+            case 0:
                 break;
 
             // local host server
@@ -52,8 +36,13 @@ public class MainMenu : MonoBehaviour
         }
     }
 
-    private void Logout()
+    public void Logout()
     {
-        IsLogined = false;
+        if (GameManager.Instance.Session.IsLogin())
+        {
+            GameManager.Instance.Session.Logout();
+            GameManager.Instance.NetworkManager.Disconnect();
+            Username.text = null;
+        }
     }
 }

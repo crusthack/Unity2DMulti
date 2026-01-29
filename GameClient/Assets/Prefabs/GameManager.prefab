@@ -44,6 +44,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: afcbe89d3006c4743a47a2d934fe37b7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NetworkManager
+  HeartbeatInterval: 1000
 --- !u!1 &8036192786153137222
 GameObject:
   m_ObjectHideFlags: 0
@@ -89,5 +90,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 071ad9a5dc80d87499c217e805f7fc95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  selectedMap: 
+  PlayerPrefabs: []
+  SelectedCharacterIndex: 0
+  GamePlayer: {fileID: 0}
+  CurrentMap: 
   playerCount: 0
+  ShouldLoad: 0
+  TempScore: 0
+  NetworkManager: {fileID: 4405515828253926823}

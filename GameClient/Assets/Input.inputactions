@@ -106,13 +106,22 @@
             ]
         },
         {
-            "name": "Escape",
+            "name": "UI",
             "id": "08005f56-8b77-4789-9f8c-c16d3bf556d3",
             "actions": [
                 {
                     "name": "Esc",
                     "type": "Button",
                     "id": "049fafb0-02cf-4501-8215-55e870cb3d89",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Chat",
+                    "type": "Button",
+                    "id": "7a5c3b70-e332-41b0-8474-f1f308f11e21",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -128,6 +137,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "Esc",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f57a3328-2970-42aa-84ab-c327e4e8d659",
+                    "path": "<Keyboard>/enter",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Chat",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

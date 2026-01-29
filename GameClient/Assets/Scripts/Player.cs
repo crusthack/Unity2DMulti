@@ -10,15 +10,22 @@ public class Player : MonoBehaviour
     public float Score = 0;
     SkillSystem Skill;
 
+    public PlayerInput Input;
+
     void Start()
     {
         Skill = GetComponent<SkillSystem>();
+        Input = GetComponent<PlayerInput>();
     }
 
     public void AddScore(float value)
     {
         Score += value * BonusScoreMultiplier;
         Debug.Log("Score updated: " + Score);
+    }
+
+    public void Update()
+    {
     }
 
     public float BonusScoreMultiplier = 1.0f;
@@ -59,5 +66,15 @@ public class Player : MonoBehaviour
                 if (Score < 0) Score = 0;
                 break;
         }
+    }
+
+    public void DisableInput()
+    {
+        Input.DeactivateInput();
+    }
+
+    public void EnableInput()
+    {
+        Input.ActivateInput();
     }
 }

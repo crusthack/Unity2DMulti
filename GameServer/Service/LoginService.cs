@@ -1,4 +1,5 @@
-﻿using Protos;
+﻿using NetworkController.Message;
+using Protos;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -31,8 +32,24 @@ namespace GameServer.Service
             session.UserName = username;
 
             Console.WriteLine($"User {username} logged in.");
+            var b = LoginedClients.TryAdd(username, session);
 
-            return LoginedClients.TryAdd(username, session);
+            if(b)
+            {
+                var message = new ProtobufMessage(
+                    new SystemMessage
+                    {
+                        LoginResponse = new LoginResponse
+                        {
+                            Success = true,
+                            UserName = username,
+                            Message = "Login Success"
+                        }
+                    }, ProtobufMessage.OpCode.System);
+                Server.SendMessage(session, message);
+            }
+
+            return b;
         }
 
         public void Logout(ClientSession session)
@@ -49,6 +66,11 @@ namespace GameServer.Service
         public IReadOnlyCollection<ClientSession> GetLoggedInSessionsSnapshot()
         {
             return LoginedClients.Values.ToArray();
+        }
+
+        public void Heartbeat(ClientSession session, Heartbeat requestMessage)
+        {
+            session.LastActiveTime = requestMessage.Timestamp;
         }
     }
 }

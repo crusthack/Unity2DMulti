@@ -1,4 +1,5 @@
 using System.IO;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -11,6 +12,8 @@ public class SceneController : MonoBehaviour
 
     private GameObject GamePlayer;
     public GameObject SpawnPoint;
+
+    public TMP_InputField InputField;
 
     void Start()
     {
@@ -47,12 +50,14 @@ public class SceneController : MonoBehaviour
             GamePlayer.GetComponent<Player>().Score = GameManager.Instance.TempScore;
         }
 
-
         GameManager.Instance.CurrentMap = SceneManager.GetActiveScene().name;
     }
 
     public void OnEsc()
     {
+        if (InputField.isFocused)
+            return;
+
         // Game Stopped
         if (GameState == 1)
         {
@@ -73,5 +78,15 @@ public class SceneController : MonoBehaviour
         GameManager.Instance.SaveGame();
         Time.timeScale = 1f;
         SceneManager.LoadScene("MainMenu");
+    }
+
+    public void OnChat()
+    {
+        if (InputField.isFocused)
+            return;
+        Debug.Log("Enter");
+        GameManager.Instance.GamePlayer.GetComponent<Player>().DisableInput();
+
+        InputField.ActivateInputField();
     }
 }
