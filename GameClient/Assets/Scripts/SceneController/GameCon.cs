@@ -29,6 +29,7 @@ public class SceneController : MonoBehaviour
         GamePlayer.SetActive(true);
 
         GameManager.Instance.GamePlayer = GamePlayer;
+        GamePlayer.GetComponent<Player>().EnableInput();
 
         HUD.SetActive(true);
         HUD.GetComponent<HUD>().BindPlayer(GamePlayer);
@@ -36,7 +37,6 @@ public class SceneController : MonoBehaviour
 
         GameState = 0;
         Time.timeScale = 1f;
-
 
         var gameData = GameManager.Instance.LoadGame(GameManager.Instance.SelectedCharacterIndex);
         if (GameManager.Instance.ShouldLoad && gameData != null)

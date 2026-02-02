@@ -1,9 +1,7 @@
 using NetworkController.Message;
 using Protos;
-using System.Reflection.Emit;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Rendering.VirtualTexturing;
 
 public class MainMenuHandler : MonoBehaviour
 {
@@ -62,3 +60,4 @@ public class MainMenuHandler : MonoBehaviour
         LoginStatus.text = message.Message;
     }
 }
+    

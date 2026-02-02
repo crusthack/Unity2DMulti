@@ -28,6 +28,8 @@ namespace GameServer
 
         public LoginService LoginService;
         public ChattingService ChattingService;
+        public GameRoomService GameRoomService;
+        public GameService GameService;
 
         public Server()
         {
@@ -45,6 +47,8 @@ namespace GameServer
 
             LoginService = new(this);
             ChattingService = new(this);
+            GameRoomService = new(this);
+            GameService = new(this);
 
             HeartbeatTask = new Task(async () =>
             {
@@ -177,6 +181,7 @@ namespace GameServer
 
         public void SendMessage(ClientSession session, ProtobufMessage message)
         {
+            Console.WriteLine($"Send Message To {session.SessionID}, message type: {message.Header.OpCode.ToString()}, messasge size: {message.GetSize()}");
             Netcon.SendMessageTo(session.SessionID, message);
         }
     }

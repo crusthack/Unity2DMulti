@@ -32,6 +32,7 @@ public class MainMenuController : MonoBehaviour
 
             // local host server
             case 1:
+                SceneManager.LoadScene("MultiJoin");
                 break;
         }
     }

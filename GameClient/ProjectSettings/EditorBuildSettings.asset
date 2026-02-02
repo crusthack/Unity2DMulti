@@ -12,14 +12,20 @@ EditorBuildSettings:
     path: Assets/Scenes/MainMenu.unity
     guid: c1f189f0f14e68b4d85a08739ca62c98
   - enabled: 1
-    path: Assets/Scenes/Map_A.unity
+    path: Assets/Scenes/Maps/Map_A.unity
     guid: 890c6f540a5c6ce4e92dd0e233f011f8
   - enabled: 1
     path: Assets/Scenes/CharacterSelect.unity
     guid: 4dcc4312d3d075d4c99a607befc02ab8
   - enabled: 1
-    path: Assets/Scenes/Map_B.unity
+    path: Assets/Scenes/Maps/Map_B.unity
     guid: 406e700f08519084299a90a809d79b06
+  - enabled: 1
+    path: Assets/Scenes/MultiJoin.unity
+    guid: 04a736f1678b3ac49966ed58e8a7e3e0
+  - enabled: 1
+    path: Assets/Scenes/MultiCreate.unity
+    guid: 54fcb3b5f247d8048a4f79a4be504832
   m_configObjects:
     com.unity.adaptivePerformance.basic.provider_settings: {fileID: 11400000, guid: 92775e3ef953bf541a473b4739a7b81a, type: 2}
     com.unity.adaptiveperformance.loader_settings: {fileID: 11400000, guid: d622e767a604fee44b02c6f05f5f12df, type: 2}

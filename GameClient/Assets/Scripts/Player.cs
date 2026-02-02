@@ -12,10 +12,11 @@ public class Player : MonoBehaviour
 
     public PlayerInput Input;
 
-    void Start()
+    void Awake()
     {
         Skill = GetComponent<SkillSystem>();
         Input = GetComponent<PlayerInput>();
+        DisableInput();
     }
 
     public void AddScore(float value)

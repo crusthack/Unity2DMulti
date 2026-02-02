@@ -11,11 +11,15 @@ namespace GameServer.MessageProcessor
         Server Server;
         SystemMessageHandler SystemHandler;
         ChattingMessageHandler ChattingHandler;
+        RoomMessageHandler RoomMessageHandler;
+        GameMessageHandler GameMessageHandler;
         public MessageProcessor(Server server) 
         {
             Server = server;
             SystemHandler = new SystemMessageHandler(server);
             ChattingHandler = new ChattingMessageHandler(server);
+            RoomMessageHandler = new RoomMessageHandler(server);
+            GameMessageHandler = new GameMessageHandler(server);
         }
 
         public void HandleMessage(ClientSession session, ProtobufMessage message)
@@ -30,6 +34,11 @@ namespace GameServer.MessageProcessor
                         break;
                     case ProtobufMessage.OpCode.System:
                         SystemHandler.HandlerMessage(session, message);
+                        break;
+                    case ProtobufMessage.OpCode.Room:
+                        RoomMessageHandler.HandleMessage(session, message);
+                        break;
+                    case ProtobufMessage.OpCode.Game:
                         break;
                 }
             }

@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+option csharp_namespace = "Protos";
+
+message RoomMessage{
+	oneof Payload{
+		RoomList room_list = 1;
+		CreateRoom create_room = 2;
+		JoinRoom join_room = 3;
+	}
+}
+
+message RoomList{
+	repeated RoomInfo Rooms = 1;
+}
+
+message RoomInfo{
+	string RoomName = 1;
+	string OwnerName = 2;
+	repeated string Players = 3;
+};
+
+message CreateRoom{
+	string RoomName = 1;
+};
+
+message JoinRoom{
+	string RoomName = 1;
+	string OwnerName = 2;
+};
+

@@ -60,7 +60,6 @@ namespace GameServer.Service
             }
             LoginedClients.TryRemove(session.UserName, out var _);
             Console.WriteLine($"User {session.UserName} logged out.");
-            session.UserName = string.Empty;
         }
 
         public IReadOnlyCollection<ClientSession> GetLoggedInSessionsSnapshot()

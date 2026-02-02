@@ -70,10 +70,21 @@ public class GameSession
 {
     bool IsLoggedIn = false;
     string Username = "";
+    bool PlayingMulti = false;
     
     public bool IsLogin()
     {
         return IsLoggedIn; 
+    }
+
+    public bool IsMulti()
+    {
+        return PlayingMulti;
+    }
+    
+    public void SetMulti(bool b)
+    {
+        PlayingMulti = b; 
     }
 
     public void LoginSuccess(string username)

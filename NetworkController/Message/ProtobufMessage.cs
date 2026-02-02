@@ -11,6 +11,8 @@ namespace NetworkController.Message
         {
             System = 1,
             Chatting = 2,
+            Room = 3,
+            Game = 4,
         }
 
         public ProtobufMessageHeader Header;
@@ -197,6 +199,9 @@ namespace NetworkController.Message
         static readonly Dictionary<Int32, Func<byte[], IMessage>> Parsers = new Dictionary<int, Func<byte[], IMessage>>() {
             { (Int32)ProtobufMessage.OpCode.System, (b) => SystemMessage.Parser.ParseFrom(b) },
             { (Int32)ProtobufMessage.OpCode.Chatting, (b) => ChattingMessage.Parser.ParseFrom(b) },
+            { (Int32)ProtobufMessage.OpCode.Room, (b) => RoomMessage.Parser.ParseFrom(b)  },
+            { (Int32)ProtobufMessage.OpCode.Game, (b) => GameMessage.Parser.ParseFrom(b)  },
+
         };
 
         public static IMessage Parse(Int32 opcode, byte[] payload)

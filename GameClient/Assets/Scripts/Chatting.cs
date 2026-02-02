@@ -60,15 +60,12 @@ public class Chatting : MonoBehaviour
         {
             var msg = message.Payload as ChattingMessage;
             var payload = msg.Username + ": " + msg.Message;
-            Debug.Log(payload);
+
             var chat = Instantiate(ChatProps, Content);
             chat.GetComponent<TMP_Text>().text = payload;
-            ChatScroll.value = 0;
-            Debug.Log(ChatScroll.value);
 
             Canvas.ForceUpdateCanvases();
             Rect.verticalNormalizedPosition = 0f;
-
         }
     }
 }

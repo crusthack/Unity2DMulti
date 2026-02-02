@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("NetworkControllerLib")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1485251ff03d4aff0b3eae94895e708be302d198")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2621013c5834c5eda1e964c6849652b00bfb767a")]
 [assembly: System.Reflection.AssemblyProductAttribute("NetworkControllerLib")]
 [assembly: System.Reflection.AssemblyTitleAttribute("NetworkControllerLib")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

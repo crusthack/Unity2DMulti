@@ -8,13 +8,16 @@ public class CharacterSelectMenu : MonoBehaviour
 
     void Start()
     {
-        var saveInfo = GameManager.Instance.LoadGame(0);
-        CharacterInfo0.text = $"Map: {saveInfo.MapName}\n" +
-            $"Score: {saveInfo.score}\n";
+        if (!GameManager.Instance.Session.IsMulti())
+        {
+            var saveInfo = GameManager.Instance.LoadGame(0);
+            CharacterInfo0.text = $"Map: {saveInfo.MapName}\n" +
+                $"Score: {saveInfo.score}\n";
 
-        var saveInfo1 = GameManager.Instance.LoadGame(1);
-        CharacterInfo1.text = $"Map: {saveInfo1.MapName}\n" +
-            $"Score: {saveInfo1.score}\n";
+            var saveInfo1 = GameManager.Instance.LoadGame(1);
+            CharacterInfo1.text = $"Map: {saveInfo1.MapName}\n" +
+                $"Score: {saveInfo1.score}\n";
+        }
     }
     public void OnSelectCharacter(int index)
     {
@@ -32,5 +35,10 @@ public class CharacterSelectMenu : MonoBehaviour
             mapName = "Map_A";
         }
         UnityEngine.SceneManagement.SceneManager.LoadScene($"{mapName}");
+    }
+
+    public void GotoMain()
+    {
+        UnityEngine.SceneManagement.SceneManager.LoadScene($"MainMenu");
     }
 }

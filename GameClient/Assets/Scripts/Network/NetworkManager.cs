@@ -108,7 +108,7 @@ public class NetworkManager : MonoBehaviour
         SendMessage(message);
     }
 
-    void SendMessage(ProtobufMessage message)
+    public void SendMessage(ProtobufMessage message)
     {
         if (!Netcon.IsConnected())
         {

@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+option csharp_namespace = "Protos";
+
+message GameMessage{
+	oneof Payload{
+		SyncMessage game_sync = 1;
+		RPC rpc = 2;
+	}
+};
+
+message SyncMessage{
+	uint32 object_id = 1;
+	uint32 prefab_id = 2;
+	int32 position_x = 3;
+	int32 position_y = 4;
+	int32 move_x = 5;
+	int32 move_y= 6;
+	string rpc_name = 7;
+	string user_name = 8;
+	int32 score = 9;
+};
+
+message RPC{
+	uint32 object_id = 1;
+	string rpc_name = 2;
+	repeated string values = 3;
+};
