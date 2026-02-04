@@ -24,20 +24,22 @@ namespace Protos {
     static GameReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "ChFQcm90b3MvZ2FtZS5wcm90byJQCgtHYW1lTWVzc2FnZRIhCglnYW1lX3N5",
-            "bmMYASABKAsyDC5TeW5jTWVzc2FnZUgAEhMKA3JwYxgCIAEoCzIELlJQQ0gA",
-            "QgkKB1BheWxvYWQirwEKC1N5bmNNZXNzYWdlEhEKCW9iamVjdF9pZBgBIAEo",
-            "DRIRCglwcmVmYWJfaWQYAiABKA0SEgoKcG9zaXRpb25feBgDIAEoBRISCgpw",
-            "b3NpdGlvbl95GAQgASgFEg4KBm1vdmVfeBgFIAEoBRIOCgZtb3ZlX3kYBiAB",
-            "KAUSEAoIcnBjX25hbWUYByABKAkSEQoJdXNlcl9uYW1lGAggASgJEg0KBXNj",
-            "b3JlGAkgASgFIjoKA1JQQxIRCglvYmplY3RfaWQYASABKA0SEAoIcnBjX25h",
-            "bWUYAiABKAkSDgoGdmFsdWVzGAMgAygJQgmqAgZQcm90b3NiBnByb3RvMw=="));
+            "ChFQcm90b3MvZ2FtZS5wcm90byKNAQoLR2FtZU1lc3NhZ2USEgoKc2Vzc2lv",
+            "bl9pRBgBIAEoBRIRCgl1c2VyX25hbWUYAiABKAkSFAoMZG9fYnJvYWRjYXN0",
+            "GAMgASgIEiEKCWdhbWVfc3luYxgEIAEoCzIMLlN5bmNNZXNzYWdlSAASEwoD",
+            "cnBjGAUgASgLMgQuUlBDSABCCQoHUGF5bG9hZCKyAQoLU3luY01lc3NhZ2US",
+            "EQoJcGxheWVyX2lkGAEgASgFEhEKCXByZWZhYl9pZBgCIAEoBRISCgpwb3Np",
+            "dGlvbl94GAMgASgFEhIKCnBvc2l0aW9uX3kYBCABKAUSDgoGbW92ZV94GAUg",
+            "ASgFEg4KBm1vdmVfeRgGIAEoBRITCgtjdXJyZW50X21hcBgHIAEoCRIRCgl1",
+            "c2VyX25hbWUYCCABKAkSDQoFc2NvcmUYCSABKAUiOgoDUlBDEhEKCXBsYXll",
+            "cl9pZBgBIAEoBRIQCghycGNfbmFtZRgCIAEoCRIOCgZ2YWx1ZXMYAyADKAlC",
+            "CaoCBlByb3Rvc2IGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::Protos.GameMessage), global::Protos.GameMessage.Parser, new[]{ "GameSync", "Rpc" }, new[]{ "Payload" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Protos.SyncMessage), global::Protos.SyncMessage.Parser, new[]{ "ObjectId", "PrefabId", "PositionX", "PositionY", "MoveX", "MoveY", "RpcName", "UserName", "Score" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Protos.RPC), global::Protos.RPC.Parser, new[]{ "ObjectId", "RpcName", "Values" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Protos.GameMessage), global::Protos.GameMessage.Parser, new[]{ "SessionID", "UserName", "DoBroadcast", "GameSync", "Rpc" }, new[]{ "Payload" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Protos.SyncMessage), global::Protos.SyncMessage.Parser, new[]{ "PlayerId", "PrefabId", "PositionX", "PositionY", "MoveX", "MoveY", "CurrentMap", "UserName", "Score" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Protos.RPC), global::Protos.RPC.Parser, new[]{ "PlayerId", "RpcName", "Values" }, null, null, null, null)
           }));
     }
     #endregion
@@ -79,6 +81,9 @@ namespace Protos {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public GameMessage(GameMessage other) : this() {
+      sessionID_ = other.sessionID_;
+      userName_ = other.userName_;
+      doBroadcast_ = other.doBroadcast_;
       switch (other.PayloadCase) {
         case PayloadOneofCase.GameSync:
           GameSync = other.GameSync.Clone();
@@ -97,8 +102,44 @@ namespace Protos {
       return new GameMessage(this);
     }
 
+    /// <summary>Field number for the "session_iD" field.</summary>
+    public const int SessionIDFieldNumber = 1;
+    private int sessionID_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int SessionID {
+      get { return sessionID_; }
+      set {
+        sessionID_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "user_name" field.</summary>
+    public const int UserNameFieldNumber = 2;
+    private string userName_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string UserName {
+      get { return userName_; }
+      set {
+        userName_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "do_broadcast" field.</summary>
+    public const int DoBroadcastFieldNumber = 3;
+    private bool doBroadcast_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool DoBroadcast {
+      get { return doBroadcast_; }
+      set {
+        doBroadcast_ = value;
+      }
+    }
+
     /// <summary>Field number for the "game_sync" field.</summary>
-    public const int GameSyncFieldNumber = 1;
+    public const int GameSyncFieldNumber = 4;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public global::Protos.SyncMessage GameSync {
@@ -110,7 +151,7 @@ namespace Protos {
     }
 
     /// <summary>Field number for the "rpc" field.</summary>
-    public const int RpcFieldNumber = 2;
+    public const int RpcFieldNumber = 5;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public global::Protos.RPC Rpc {
@@ -125,8 +166,8 @@ namespace Protos {
     /// <summary>Enum of possible cases for the "Payload" oneof.</summary>
     public enum PayloadOneofCase {
       None = 0,
-      GameSync = 1,
-      Rpc = 2,
+      GameSync = 4,
+      Rpc = 5,
     }
     private PayloadOneofCase payloadCase_ = PayloadOneofCase.None;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -157,6 +198,9 @@ namespace Protos {
       if (ReferenceEquals(other, this)) {
         return true;
       }
+      if (SessionID != other.SessionID) return false;
+      if (UserName != other.UserName) return false;
+      if (DoBroadcast != other.DoBroadcast) return false;
       if (!object.Equals(GameSync, other.GameSync)) return false;
       if (!object.Equals(Rpc, other.Rpc)) return false;
       if (PayloadCase != other.PayloadCase) return false;
@@ -167,6 +211,9 @@ namespace Protos {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override int GetHashCode() {
       int hash = 1;
+      if (SessionID != 0) hash ^= SessionID.GetHashCode();
+      if (UserName.Length != 0) hash ^= UserName.GetHashCode();
+      if (DoBroadcast != false) hash ^= DoBroadcast.GetHashCode();
       if (payloadCase_ == PayloadOneofCase.GameSync) hash ^= GameSync.GetHashCode();
       if (payloadCase_ == PayloadOneofCase.Rpc) hash ^= Rpc.GetHashCode();
       hash ^= (int) payloadCase_;
@@ -188,12 +235,24 @@ namespace Protos {
     #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       output.WriteRawMessage(this);
     #else
+      if (SessionID != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(SessionID);
+      }
+      if (UserName.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(UserName);
+      }
+      if (DoBroadcast != false) {
+        output.WriteRawTag(24);
+        output.WriteBool(DoBroadcast);
+      }
       if (payloadCase_ == PayloadOneofCase.GameSync) {
-        output.WriteRawTag(10);
+        output.WriteRawTag(34);
         output.WriteMessage(GameSync);
       }
       if (payloadCase_ == PayloadOneofCase.Rpc) {
-        output.WriteRawTag(18);
+        output.WriteRawTag(42);
         output.WriteMessage(Rpc);
       }
       if (_unknownFields != null) {
@@ -206,12 +265,24 @@ namespace Protos {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (SessionID != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(SessionID);
+      }
+      if (UserName.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(UserName);
+      }
+      if (DoBroadcast != false) {
+        output.WriteRawTag(24);
+        output.WriteBool(DoBroadcast);
+      }
       if (payloadCase_ == PayloadOneofCase.GameSync) {
-        output.WriteRawTag(10);
+        output.WriteRawTag(34);
         output.WriteMessage(GameSync);
       }
       if (payloadCase_ == PayloadOneofCase.Rpc) {
-        output.WriteRawTag(18);
+        output.WriteRawTag(42);
         output.WriteMessage(Rpc);
       }
       if (_unknownFields != null) {
@@ -224,6 +295,15 @@ namespace Protos {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public int CalculateSize() {
       int size = 0;
+      if (SessionID != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(SessionID);
+      }
+      if (UserName.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(UserName);
+      }
+      if (DoBroadcast != false) {
+        size += 1 + 1;
+      }
       if (payloadCase_ == PayloadOneofCase.GameSync) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(GameSync);
       }
@@ -241,6 +321,15 @@ namespace Protos {
     public void MergeFrom(GameMessage other) {
       if (other == null) {
         return;
+      }
+      if (other.SessionID != 0) {
+        SessionID = other.SessionID;
+      }
+      if (other.UserName.Length != 0) {
+        UserName = other.UserName;
+      }
+      if (other.DoBroadcast != false) {
+        DoBroadcast = other.DoBroadcast;
       }
       switch (other.PayloadCase) {
         case PayloadOneofCase.GameSync:
@@ -276,7 +365,19 @@ namespace Protos {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
-          case 10: {
+          case 8: {
+            SessionID = input.ReadInt32();
+            break;
+          }
+          case 18: {
+            UserName = input.ReadString();
+            break;
+          }
+          case 24: {
+            DoBroadcast = input.ReadBool();
+            break;
+          }
+          case 34: {
             global::Protos.SyncMessage subBuilder = new global::Protos.SyncMessage();
             if (payloadCase_ == PayloadOneofCase.GameSync) {
               subBuilder.MergeFrom(GameSync);
@@ -285,7 +386,7 @@ namespace Protos {
             GameSync = subBuilder;
             break;
           }
-          case 18: {
+          case 42: {
             global::Protos.RPC subBuilder = new global::Protos.RPC();
             if (payloadCase_ == PayloadOneofCase.Rpc) {
               subBuilder.MergeFrom(Rpc);
@@ -313,7 +414,19 @@ namespace Protos {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
-          case 10: {
+          case 8: {
+            SessionID = input.ReadInt32();
+            break;
+          }
+          case 18: {
+            UserName = input.ReadString();
+            break;
+          }
+          case 24: {
+            DoBroadcast = input.ReadBool();
+            break;
+          }
+          case 34: {
             global::Protos.SyncMessage subBuilder = new global::Protos.SyncMessage();
             if (payloadCase_ == PayloadOneofCase.GameSync) {
               subBuilder.MergeFrom(GameSync);
@@ -322,7 +435,7 @@ namespace Protos {
             GameSync = subBuilder;
             break;
           }
-          case 18: {
+          case 42: {
             global::Protos.RPC subBuilder = new global::Protos.RPC();
             if (payloadCase_ == PayloadOneofCase.Rpc) {
               subBuilder.MergeFrom(Rpc);
@@ -373,13 +486,13 @@ namespace Protos {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public SyncMessage(SyncMessage other) : this() {
-      objectId_ = other.objectId_;
+      playerId_ = other.playerId_;
       prefabId_ = other.prefabId_;
       positionX_ = other.positionX_;
       positionY_ = other.positionY_;
       moveX_ = other.moveX_;
       moveY_ = other.moveY_;
-      rpcName_ = other.rpcName_;
+      currentMap_ = other.currentMap_;
       userName_ = other.userName_;
       score_ = other.score_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
@@ -391,24 +504,24 @@ namespace Protos {
       return new SyncMessage(this);
     }
 
-    /// <summary>Field number for the "object_id" field.</summary>
-    public const int ObjectIdFieldNumber = 1;
-    private uint objectId_;
+    /// <summary>Field number for the "player_id" field.</summary>
+    public const int PlayerIdFieldNumber = 1;
+    private int playerId_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public uint ObjectId {
-      get { return objectId_; }
+    public int PlayerId {
+      get { return playerId_; }
       set {
-        objectId_ = value;
+        playerId_ = value;
       }
     }
 
     /// <summary>Field number for the "prefab_id" field.</summary>
     public const int PrefabIdFieldNumber = 2;
-    private uint prefabId_;
+    private int prefabId_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public uint PrefabId {
+    public int PrefabId {
       get { return prefabId_; }
       set {
         prefabId_ = value;
@@ -463,15 +576,15 @@ namespace Protos {
       }
     }
 
-    /// <summary>Field number for the "rpc_name" field.</summary>
-    public const int RpcNameFieldNumber = 7;
-    private string rpcName_ = "";
+    /// <summary>Field number for the "current_map" field.</summary>
+    public const int CurrentMapFieldNumber = 7;
+    private string currentMap_ = "";
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public string RpcName {
-      get { return rpcName_; }
+    public string CurrentMap {
+      get { return currentMap_; }
       set {
-        rpcName_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+        currentMap_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
       }
     }
 
@@ -514,13 +627,13 @@ namespace Protos {
       if (ReferenceEquals(other, this)) {
         return true;
       }
-      if (ObjectId != other.ObjectId) return false;
+      if (PlayerId != other.PlayerId) return false;
       if (PrefabId != other.PrefabId) return false;
       if (PositionX != other.PositionX) return false;
       if (PositionY != other.PositionY) return false;
       if (MoveX != other.MoveX) return false;
       if (MoveY != other.MoveY) return false;
-      if (RpcName != other.RpcName) return false;
+      if (CurrentMap != other.CurrentMap) return false;
       if (UserName != other.UserName) return false;
       if (Score != other.Score) return false;
       return Equals(_unknownFields, other._unknownFields);
@@ -530,13 +643,13 @@ namespace Protos {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override int GetHashCode() {
       int hash = 1;
-      if (ObjectId != 0) hash ^= ObjectId.GetHashCode();
+      if (PlayerId != 0) hash ^= PlayerId.GetHashCode();
       if (PrefabId != 0) hash ^= PrefabId.GetHashCode();
       if (PositionX != 0) hash ^= PositionX.GetHashCode();
       if (PositionY != 0) hash ^= PositionY.GetHashCode();
       if (MoveX != 0) hash ^= MoveX.GetHashCode();
       if (MoveY != 0) hash ^= MoveY.GetHashCode();
-      if (RpcName.Length != 0) hash ^= RpcName.GetHashCode();
+      if (CurrentMap.Length != 0) hash ^= CurrentMap.GetHashCode();
       if (UserName.Length != 0) hash ^= UserName.GetHashCode();
       if (Score != 0) hash ^= Score.GetHashCode();
       if (_unknownFields != null) {
@@ -557,13 +670,13 @@ namespace Protos {
     #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       output.WriteRawMessage(this);
     #else
-      if (ObjectId != 0) {
+      if (PlayerId != 0) {
         output.WriteRawTag(8);
-        output.WriteUInt32(ObjectId);
+        output.WriteInt32(PlayerId);
       }
       if (PrefabId != 0) {
         output.WriteRawTag(16);
-        output.WriteUInt32(PrefabId);
+        output.WriteInt32(PrefabId);
       }
       if (PositionX != 0) {
         output.WriteRawTag(24);
@@ -581,9 +694,9 @@ namespace Protos {
         output.WriteRawTag(48);
         output.WriteInt32(MoveY);
       }
-      if (RpcName.Length != 0) {
+      if (CurrentMap.Length != 0) {
         output.WriteRawTag(58);
-        output.WriteString(RpcName);
+        output.WriteString(CurrentMap);
       }
       if (UserName.Length != 0) {
         output.WriteRawTag(66);
@@ -603,13 +716,13 @@ namespace Protos {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
-      if (ObjectId != 0) {
+      if (PlayerId != 0) {
         output.WriteRawTag(8);
-        output.WriteUInt32(ObjectId);
+        output.WriteInt32(PlayerId);
       }
       if (PrefabId != 0) {
         output.WriteRawTag(16);
-        output.WriteUInt32(PrefabId);
+        output.WriteInt32(PrefabId);
       }
       if (PositionX != 0) {
         output.WriteRawTag(24);
@@ -627,9 +740,9 @@ namespace Protos {
         output.WriteRawTag(48);
         output.WriteInt32(MoveY);
       }
-      if (RpcName.Length != 0) {
+      if (CurrentMap.Length != 0) {
         output.WriteRawTag(58);
-        output.WriteString(RpcName);
+        output.WriteString(CurrentMap);
       }
       if (UserName.Length != 0) {
         output.WriteRawTag(66);
@@ -649,11 +762,11 @@ namespace Protos {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public int CalculateSize() {
       int size = 0;
-      if (ObjectId != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(ObjectId);
+      if (PlayerId != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(PlayerId);
       }
       if (PrefabId != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(PrefabId);
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(PrefabId);
       }
       if (PositionX != 0) {
         size += 1 + pb::CodedOutputStream.ComputeInt32Size(PositionX);
@@ -667,8 +780,8 @@ namespace Protos {
       if (MoveY != 0) {
         size += 1 + pb::CodedOutputStream.ComputeInt32Size(MoveY);
       }
-      if (RpcName.Length != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeStringSize(RpcName);
+      if (CurrentMap.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(CurrentMap);
       }
       if (UserName.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(UserName);
@@ -688,8 +801,8 @@ namespace Protos {
       if (other == null) {
         return;
       }
-      if (other.ObjectId != 0) {
-        ObjectId = other.ObjectId;
+      if (other.PlayerId != 0) {
+        PlayerId = other.PlayerId;
       }
       if (other.PrefabId != 0) {
         PrefabId = other.PrefabId;
@@ -706,8 +819,8 @@ namespace Protos {
       if (other.MoveY != 0) {
         MoveY = other.MoveY;
       }
-      if (other.RpcName.Length != 0) {
-        RpcName = other.RpcName;
+      if (other.CurrentMap.Length != 0) {
+        CurrentMap = other.CurrentMap;
       }
       if (other.UserName.Length != 0) {
         UserName = other.UserName;
@@ -735,11 +848,11 @@ namespace Protos {
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
           case 8: {
-            ObjectId = input.ReadUInt32();
+            PlayerId = input.ReadInt32();
             break;
           }
           case 16: {
-            PrefabId = input.ReadUInt32();
+            PrefabId = input.ReadInt32();
             break;
           }
           case 24: {
@@ -759,7 +872,7 @@ namespace Protos {
             break;
           }
           case 58: {
-            RpcName = input.ReadString();
+            CurrentMap = input.ReadString();
             break;
           }
           case 66: {
@@ -790,11 +903,11 @@ namespace Protos {
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
           case 8: {
-            ObjectId = input.ReadUInt32();
+            PlayerId = input.ReadInt32();
             break;
           }
           case 16: {
-            PrefabId = input.ReadUInt32();
+            PrefabId = input.ReadInt32();
             break;
           }
           case 24: {
@@ -814,7 +927,7 @@ namespace Protos {
             break;
           }
           case 58: {
-            RpcName = input.ReadString();
+            CurrentMap = input.ReadString();
             break;
           }
           case 66: {
@@ -867,7 +980,7 @@ namespace Protos {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public RPC(RPC other) : this() {
-      objectId_ = other.objectId_;
+      playerId_ = other.playerId_;
       rpcName_ = other.rpcName_;
       values_ = other.values_.Clone();
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
@@ -879,15 +992,15 @@ namespace Protos {
       return new RPC(this);
     }
 
-    /// <summary>Field number for the "object_id" field.</summary>
-    public const int ObjectIdFieldNumber = 1;
-    private uint objectId_;
+    /// <summary>Field number for the "player_id" field.</summary>
+    public const int PlayerIdFieldNumber = 1;
+    private int playerId_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public uint ObjectId {
-      get { return objectId_; }
+    public int PlayerId {
+      get { return playerId_; }
       set {
-        objectId_ = value;
+        playerId_ = value;
       }
     }
 
@@ -929,7 +1042,7 @@ namespace Protos {
       if (ReferenceEquals(other, this)) {
         return true;
       }
-      if (ObjectId != other.ObjectId) return false;
+      if (PlayerId != other.PlayerId) return false;
       if (RpcName != other.RpcName) return false;
       if(!values_.Equals(other.values_)) return false;
       return Equals(_unknownFields, other._unknownFields);
@@ -939,7 +1052,7 @@ namespace Protos {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override int GetHashCode() {
       int hash = 1;
-      if (ObjectId != 0) hash ^= ObjectId.GetHashCode();
+      if (PlayerId != 0) hash ^= PlayerId.GetHashCode();
       if (RpcName.Length != 0) hash ^= RpcName.GetHashCode();
       hash ^= values_.GetHashCode();
       if (_unknownFields != null) {
@@ -960,9 +1073,9 @@ namespace Protos {
     #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       output.WriteRawMessage(this);
     #else
-      if (ObjectId != 0) {
+      if (PlayerId != 0) {
         output.WriteRawTag(8);
-        output.WriteUInt32(ObjectId);
+        output.WriteInt32(PlayerId);
       }
       if (RpcName.Length != 0) {
         output.WriteRawTag(18);
@@ -979,9 +1092,9 @@ namespace Protos {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
-      if (ObjectId != 0) {
+      if (PlayerId != 0) {
         output.WriteRawTag(8);
-        output.WriteUInt32(ObjectId);
+        output.WriteInt32(PlayerId);
       }
       if (RpcName.Length != 0) {
         output.WriteRawTag(18);
@@ -998,8 +1111,8 @@ namespace Protos {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public int CalculateSize() {
       int size = 0;
-      if (ObjectId != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(ObjectId);
+      if (PlayerId != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(PlayerId);
       }
       if (RpcName.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(RpcName);
@@ -1017,8 +1130,8 @@ namespace Protos {
       if (other == null) {
         return;
       }
-      if (other.ObjectId != 0) {
-        ObjectId = other.ObjectId;
+      if (other.PlayerId != 0) {
+        PlayerId = other.PlayerId;
       }
       if (other.RpcName.Length != 0) {
         RpcName = other.RpcName;
@@ -1044,7 +1157,7 @@ namespace Protos {
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
           case 8: {
-            ObjectId = input.ReadUInt32();
+            PlayerId = input.ReadInt32();
             break;
           }
           case 18: {
@@ -1075,7 +1188,7 @@ namespace Protos {
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
           case 8: {
-            ObjectId = input.ReadUInt32();
+            PlayerId = input.ReadInt32();
             break;
           }
           case 18: {

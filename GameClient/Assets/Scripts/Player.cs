@@ -1,3 +1,4 @@
+using Protos;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -9,6 +10,9 @@ public class Player : MonoBehaviour
     public bool IsLookingRight = true;
     public float Score = 0;
     SkillSystem Skill;
+    public string CurrentMap = "Map_A";
+    public int PrefabID = 0;
+    public string UserName;
 
     public PlayerInput Input;
 
@@ -17,6 +21,7 @@ public class Player : MonoBehaviour
         Skill = GetComponent<SkillSystem>();
         Input = GetComponent<PlayerInput>();
         DisableInput();
+        PrefabID = GameManager.Instance.SelectedCharacterIndex;
     }
 
     public void AddScore(float value)
@@ -77,5 +82,31 @@ public class Player : MonoBehaviour
     public void EnableInput()
     {
         Input.ActivateInput();
+    }
+
+    public SyncMessage GetSyncInfo()
+    {
+        var m = new SyncMessage
+        {
+            PlayerId = 0,
+            PrefabId = PrefabID,
+            PositionX = (int)transform.position.x,
+            PositionY = (int)transform.position.y,
+            MoveX = (int)MovDir.x,  
+            MoveY = (int)MovDir.y,
+            CurrentMap = CurrentMap,
+            UserName = GameManager.Instance.Session.GetUsername(),
+            Score = (int)Score,
+        };
+
+        return m;
+    }
+
+    public void Sync(SyncMessage m)
+    {
+        transform.position = new Vector3(m.PositionX, m.PositionY);
+        MovDir = new Vector2(m.MoveX, m.MoveY);
+        CurrentMap = m.CurrentMap;
+        Score = m.Score;
     }
 }

@@ -1,3 +1,4 @@
+using Protos;
 using System.IO;
 using UnityEngine;
 
@@ -49,7 +50,6 @@ public class GameManager : MonoBehaviour
         }
     }
 
-
     public GameData LoadGame(int index)
     {
         if (saveManager.Load(index, out GameData data))
@@ -70,21 +70,18 @@ public class GameSession
 {
     bool IsLoggedIn = false;
     string Username = "";
-    bool PlayingMulti = false;
-    
+    public bool IsMulti = false;
+    public bool IsHost = false;
+
     public bool IsLogin()
     {
-        return IsLoggedIn; 
+        return IsLoggedIn;
     }
 
-    public bool IsMulti()
+    public void ExitGame()
     {
-        return PlayingMulti;
-    }
-    
-    public void SetMulti(bool b)
-    {
-        PlayingMulti = b; 
+        IsMulti = false;
+        IsHost = false;
     }
 
     public void LoginSuccess(string username)

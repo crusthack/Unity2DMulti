@@ -39,6 +39,7 @@ namespace GameServer.MessageProcessor
                         RoomMessageHandler.HandleMessage(session, message);
                         break;
                     case ProtobufMessage.OpCode.Game:
+                        GameMessageHandler.HandleMessage(session, message);
                         break;
                 }
             }

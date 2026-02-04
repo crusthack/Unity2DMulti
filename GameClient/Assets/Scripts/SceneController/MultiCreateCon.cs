@@ -42,7 +42,8 @@ public class MultiCreateCon : MonoBehaviour
             if (roomMsg.PayloadCase == RoomMessage.PayloadOneofCase.CreateRoom)
             {
                 Debug.Log(roomMsg.CreateRoom.RoomName);
-                GameManager.Instance.Session.SetMulti(true);
+                GameManager.Instance.Session.IsMulti = true;
+                GameManager.Instance.Session.IsHost = true;
                 SceneManager.LoadScene("CharacterSelect");
             }
         }

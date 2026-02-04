@@ -22,6 +22,8 @@ public class MultiMenuCon : MonoBehaviour
     public Transform Players;
     List<GameObject> PlayerList = new();
 
+    RoomButton SelectedRoom = null;
+
     void Awake()
     {
         GameManager.Instance.NetworkManager.OnMessageRecv += HandleMesssage;
@@ -66,7 +68,8 @@ public class MultiMenuCon : MonoBehaviour
         }
         PlayerList.Clear();
 
-        foreach(GameObject o in RoomList)
+
+        foreach (GameObject o in RoomList)
         {
             var room = o.GetComponent<RoomButton>();
             if(room.RoomNameText.text == roomName && room.HostName.text == hostName)
@@ -79,8 +82,32 @@ public class MultiMenuCon : MonoBehaviour
                     p.GetComponent<PlayerInfoUI>().SetName(player);
                     PlayerList.Add(p);
                 }
+
+                SelectedRoom = room;
             }
         }
+    }
+
+    public void OnJoinRoom()
+    {
+        if(SelectedRoom == null)
+        {
+            return;
+        }
+
+        Debug.Log("Try To join " + SelectedRoom.RoomNameText.text);
+        var r = new RoomMessage
+        {
+            JoinRoom = new JoinRoom
+            {
+                RoomName = SelectedRoom.RoomNameText.text,
+                OwnerName = SelectedRoom.HostName.text
+            }
+        };
+
+        var message = new ProtobufMessage(r, ProtobufMessage.OpCode.Room);
+
+        GameManager.Instance.NetworkManager.SendMessage(message);
     }
 
     public void GetRoomList()
@@ -97,6 +124,7 @@ public class MultiMenuCon : MonoBehaviour
 
         var msg = new ProtobufMessage(roomMsg, ProtobufMessage.OpCode.Room);
         GameManager.Instance.NetworkManager.SendMessage(msg);
+        Debug.Log("Request Room List");
     }
 
     void HandleMesssage(ProtobufMessage message)
@@ -133,6 +161,11 @@ public class MultiMenuCon : MonoBehaviour
 
                     RoomList.Add(newRoom);
                 }
+                break;
+            case RoomMessage.PayloadOneofCase.JoinRoom:
+                Debug.Log("join to " + message.JoinRoom.OwnerName + "'s " + message.JoinRoom.RoomName);
+                GameManager.Instance.Session.IsMulti = true;
+                SceneManager.LoadScene("CharacterSelect");
                 break;
         }
     }

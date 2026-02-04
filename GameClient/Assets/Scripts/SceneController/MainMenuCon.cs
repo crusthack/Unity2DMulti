@@ -10,7 +10,14 @@ public class MainMenuHandler : MonoBehaviour
     void Awake()
     {
         GameManager.Instance.NetworkManager.OnMessageRecv += HandleMessage;
+    }
 
+    void Start()
+    {
+        if(GameManager.Instance == null)
+        {
+            Username.text = "null";
+        }
         Username.text = GameManager.Instance.Session.GetUsername();
     }
 
@@ -60,4 +67,3 @@ public class MainMenuHandler : MonoBehaviour
         LoginStatus.text = message.Message;
     }
 }
-    

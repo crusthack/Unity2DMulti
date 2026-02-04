@@ -1779,9 +1779,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: CharacterSelectMenu, Assembly-CSharp
-        m_MethodName: GotoMain
+      - m_Target: {fileID: 143707095}
+        m_TargetAssemblyTypeName: MultiMenuCon, Assembly-CSharp
+        m_MethodName: OnJoinRoom
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -5150,8 +5150,8 @@ CanvasRenderer:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
+  - {fileID: 99180193}
+  - {fileID: 143707096}
   - {fileID: 1852639121}
   - {fileID: 1219470031}
   - {fileID: 1555683058}
-  - {fileID: 99180193}
-  - {fileID: 143707096}

@@ -29,6 +29,10 @@ namespace GameServer.Service
             {
                 return false;
             }
+            if(session.IsAuthenticated)
+            {
+                return false;
+            }
             session.UserName = username;
 
             Console.WriteLine($"User {username} logged in.");

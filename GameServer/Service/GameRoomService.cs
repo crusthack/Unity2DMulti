@@ -19,12 +19,12 @@ namespace GameServer.Service
             for (int i = 0; i < 13; ++i)
             {
                 var dummyHost = new ClientSession((uint)i + 1200000);
-                dummyHost.UserName = "host #"+ i.ToString();
+                dummyHost.UserName = "host #" + i.ToString();
                 var room = new GameRoom($"test{i}", dummyHost);
 
-                Rooms.TryAdd($"test{i}", room);
+                Rooms.TryAdd($"host #{i}", room);
 
-                for(int j=0; j<i; ++j)
+                for (int j = 0; j < i; ++j)
                 {
                     var dummy = new ClientSession((uint)j + 1000000);
                     dummy.UserName = j.ToString();
@@ -41,14 +41,13 @@ namespace GameServer.Service
             }
             Console.WriteLine($"{session.UserName} request create room, name: {message.RoomName}");
 
-            if(Rooms.TryGetValue(session.UserName, out var _))
+            if (Rooms.TryGetValue(session.UserName, out var _) || session.PlayingRoom != null)
             {
                 // deny
                 return;
             }
 
             var gameRoom = new GameRoom(message.RoomName, session);
-            gameRoom.JoinRoom(session);
 
             Rooms.TryAdd(session.UserName, gameRoom);
 
@@ -58,15 +57,37 @@ namespace GameServer.Service
             };
             var pmsg = new ProtobufMessage(roomMsg, ProtobufMessage.OpCode.Room);
 
-            Owner.SendMessage(session, pmsg);
+            session.PlayingRoom = gameRoom;
 
+            Owner.SendMessage(session, pmsg);
         }
 
         public void JoinRoom(ClientSession session, Protos.JoinRoom message)
         {
-            if (message.RoomName.StartsWith("test"))
+            //if (message.RoomName.StartsWith("test"))
+            //{
+            //    return;
+            //}
+
+            if(session.PlayingRoom != null)
             {
+                Console.WriteLine(session.UserName + " session already in game");
                 return;
+            }
+
+            Console.WriteLine(session.UserName + " try to join " + message.OwnerName + "'s room");
+            if (Rooms.TryGetValue(message.OwnerName, out var room))
+            {
+                room.JoinRoom(session);
+
+                var r = new RoomMessage
+                {
+                    JoinRoom = message
+                };
+                session.PlayingRoom = room;
+
+                var m = new ProtobufMessage(r, ProtobufMessage.OpCode.Room);
+                Owner.SendMessage(session, m);
             }
         }
 
@@ -101,7 +122,7 @@ namespace GameServer.Service
         void RemoveRoom(ClientSession session)
         {
             // 접속해있는 다른 유저들 퇴장 처리
-            if(Rooms.TryRemove(session.UserName, out var room))
+            if (Rooms.TryRemove(session.UserName, out var room))
             {
                 Console.WriteLine($"{session.UserName}'s room removed");
             }

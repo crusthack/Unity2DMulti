@@ -15,6 +15,10 @@ namespace GameServer.MessageProcessor
         }
         public void HandleMessage(ClientSession session, ProtobufMessage message)
         {
+            if(!session.IsAuthenticated)
+            {
+                return;
+            }
             if (message.Payload is not GameMessage msg)
             {
                 Console.WriteLine("Invalid ChattingMessage payload");
@@ -24,9 +28,12 @@ namespace GameServer.MessageProcessor
             switch (msg!.PayloadCase)
             {
                 case GameMessage.PayloadOneofCase.GameSync:
+                    Server.GameService.ProcessSyncMessage(session, msg);
                     break;
 
                 case GameMessage.PayloadOneofCase.Rpc:
+                    Server.GameService.ProcessRpcMessage(session, msg);
+
                     break;
             }
         }

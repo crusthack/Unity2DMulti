@@ -10,6 +10,7 @@ public class Potal : MonoBehaviour
         {
             GameManager.Instance.TempScore = collision.GetComponent<Player>().Score;
             GameManager.Instance.CurrentMap = TargetMap;
+            GameManager.Instance.GamePlayer.GetComponent<Player>().CurrentMap = TargetMap;
             UnityEngine.SceneManagement.SceneManager.LoadScene(TargetMap);
         }
     }

@@ -1,3 +1,4 @@
+using Protos;
 using System.IO;
 using TMPro;
 using UnityEngine;
@@ -27,6 +28,7 @@ public class SceneController : MonoBehaviour
         }
         GamePlayer.transform.position = SpawnPoint.transform.position;
         GamePlayer.SetActive(true);
+        GamePlayer.GetComponent<Player>().UserName = GameManager.Instance.Session.GetUsername();
 
         GameManager.Instance.GamePlayer = GamePlayer;
         GamePlayer.GetComponent<Player>().EnableInput();
@@ -38,12 +40,20 @@ public class SceneController : MonoBehaviour
         GameState = 0;
         Time.timeScale = 1f;
 
-        var gameData = GameManager.Instance.LoadGame(GameManager.Instance.SelectedCharacterIndex);
-        if (GameManager.Instance.ShouldLoad && gameData != null)
+        Debug.Log(GamePlayer.GetComponent<Player>().Score);
+
+        if (GameManager.Instance.ShouldLoad)
         {
-            GamePlayer.transform.position = new Vector3(gameData.posX, gameData.posY, gameData.posZ);
-            GamePlayer.GetComponent<Player>().Score = gameData.score;
-            GameManager.Instance.ShouldLoad = false;
+            var gameData = GameManager.Instance.LoadGame(GameManager.Instance.SelectedCharacterIndex);
+            if (gameData != null)
+            {
+
+                GamePlayer.transform.position = new Vector3(gameData.posX, gameData.posY, gameData.posZ);
+                GamePlayer.GetComponent<Player>().Score = gameData.score;
+                Debug.Log(GamePlayer.GetComponent<Player>().Score);
+
+                GameManager.Instance.ShouldLoad = false;
+            }
         }
         else
         {
@@ -75,8 +85,12 @@ public class SceneController : MonoBehaviour
 
     public void SaveAndQuit()
     {
-        GameManager.Instance.SaveGame();
+        GameManager.Instance.Session.ExitGame();
         Time.timeScale = 1f;
+        if (!GameManager.Instance.Session.IsMulti)
+        {
+            GameManager.Instance.SaveGame();
+        }
         SceneManager.LoadScene("MainMenu");
     }
 
@@ -88,5 +102,14 @@ public class SceneController : MonoBehaviour
         GameManager.Instance.GamePlayer.GetComponent<Player>().DisableInput();
 
         InputField.ActivateInputField();
+    }
+
+    public GameObject SpawnPlayer(SyncMessage message)
+    {
+        var player = Instantiate(Player[message.PlayerId]);
+        player.transform.position = new Vector2(message.PositionX, message.PositionY);
+        player.SetActive(true);
+
+        return player;
     }
 }

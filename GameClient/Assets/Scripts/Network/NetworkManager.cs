@@ -123,6 +123,7 @@ public class NetworkManager : MonoBehaviour
         if (Netcon.IsConnected())
         {
             Netcon.Disconnect();
+            GameManager.Instance.Session.Logout();
         }
     }
 
