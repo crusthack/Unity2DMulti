@@ -1,29 +1,33 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\crusthack\\Documents\\Unity2DMulti\\",
+  "WorkspaceRootPath": "C:\\Users\\crusthack\\Downloads\\New folder\\Unity2DMulti\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{8CB1D2F4-457E-DC9A-2B1C-5000C4602A0C}|GameServer\\GameServer.csproj|c:\\users\\crusthack\\documents\\unity2dmulti\\gameserver\\gameserver.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "AbsoluteMoniker": "D:0:0:{0D51CF1D-74B3-4158-8742-60270B1CBD3E}|Solution Items{0D51CF1D-74B3-4158-8742-60270B1CBD3E}|C:\\Users\\crusthack\\Downloads\\New folder\\Unity2DMulti\\README.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}",
+      "RelativeMoniker": "D:0:0:{0D51CF1D-74B3-4158-8742-60270B1CBD3E}|Solution Items{0D51CF1D-74B3-4158-8742-60270B1CBD3E}|solutionrelative:README.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8CB1D2F4-457E-DC9A-2B1C-5000C4602A0C}|GameServer\\GameServer.csproj|c:\\users\\crusthack\\downloads\\new folder\\unity2dmulti\\gameserver\\gameserver.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
       "RelativeMoniker": "D:0:0:{8CB1D2F4-457E-DC9A-2B1C-5000C4602A0C}|GameServer\\GameServer.csproj|solutionrelative:gameserver\\gameserver.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{19026D2C-BE75-25E4-4F4B-E9138819E436}|NetworkController\\NetworkControllerLib.csproj|c:\\users\\crusthack\\documents\\unity2dmulti\\networkcontroller\\networkcontrollerlib.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "AbsoluteMoniker": "D:0:0:{19026D2C-BE75-25E4-4F4B-E9138819E436}|NetworkController\\NetworkControllerLib.csproj|c:\\users\\crusthack\\downloads\\new folder\\unity2dmulti\\networkcontroller\\networkcontrollerlib.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
       "RelativeMoniker": "D:0:0:{19026D2C-BE75-25E4-4F4B-E9138819E436}|NetworkController\\NetworkControllerLib.csproj|solutionrelative:networkcontroller\\networkcontrollerlib.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{7FEE7E28-F5F8-4792-897C-BE13B52492F2}|GameClientConsole\\ClientConsole.csproj|c:\\users\\crusthack\\documents\\unity2dmulti\\gameclientconsole\\clientconsole.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "AbsoluteMoniker": "D:0:0:{7FEE7E28-F5F8-4792-897C-BE13B52492F2}|GameClientConsole\\ClientConsole.csproj|c:\\users\\crusthack\\downloads\\new folder\\unity2dmulti\\gameclientconsole\\clientconsole.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
       "RelativeMoniker": "D:0:0:{7FEE7E28-F5F8-4792-897C-BE13B52492F2}|GameClientConsole\\ClientConsole.csproj|solutionrelative:gameclientconsole\\clientconsole.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{7FEE7E28-F5F8-4792-897C-BE13B52492F2}|GameClientConsole\\ClientConsole.csproj|c:\\users\\crusthack\\documents\\unity2dmulti\\gameclientconsole\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{7FEE7E28-F5F8-4792-897C-BE13B52492F2}|GameClientConsole\\ClientConsole.csproj|c:\\users\\crusthack\\downloads\\new folder\\unity2dmulti\\gameclientconsole\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{7FEE7E28-F5F8-4792-897C-BE13B52492F2}|GameClientConsole\\ClientConsole.csproj|solutionrelative:gameclientconsole\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{19026D2C-BE75-25E4-4F4B-E9138819E436}|NetworkController\\NetworkControllerLib.csproj|c:\\users\\crusthack\\documents\\unity2dmulti\\networkcontroller\\message\\protobufmessage.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{19026D2C-BE75-25E4-4F4B-E9138819E436}|NetworkController\\NetworkControllerLib.csproj|c:\\users\\crusthack\\downloads\\new folder\\unity2dmulti\\networkcontroller\\message\\protobufmessage.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{19026D2C-BE75-25E4-4F4B-E9138819E436}|NetworkController\\NetworkControllerLib.csproj|solutionrelative:networkcontroller\\message\\protobufmessage.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{19026D2C-BE75-25E4-4F4B-E9138819E436}|NetworkController\\NetworkControllerLib.csproj|c:\\users\\crusthack\\documents\\unity2dmulti\\networkcontroller\\networkcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{19026D2C-BE75-25E4-4F4B-E9138819E436}|NetworkController\\NetworkControllerLib.csproj|c:\\users\\crusthack\\downloads\\new folder\\unity2dmulti\\networkcontroller\\networkcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{19026D2C-BE75-25E4-4F4B-E9138819E436}|NetworkController\\NetworkControllerLib.csproj|solutionrelative:networkcontroller\\networkcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
@@ -34,54 +38,64 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 3,
+          "SelectedChildIndex": 0,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "ProtobufMessage.cs",
-              "DocumentMoniker": "C:\\Users\\crusthack\\Documents\\Unity2DMulti\\NetworkController\\Message\\ProtobufMessage.cs",
-              "RelativeDocumentMoniker": "NetworkController\\Message\\ProtobufMessage.cs",
-              "ToolTip": "C:\\Users\\crusthack\\Documents\\Unity2DMulti\\NetworkController\\Message\\ProtobufMessage.cs",
-              "RelativeToolTip": "NetworkController\\Message\\ProtobufMessage.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAAGAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-05T12:40:53.398Z",
+              "DocumentIndex": 0,
+              "Title": "README.md",
+              "DocumentMoniker": "C:\\Users\\crusthack\\Downloads\\New folder\\Unity2DMulti\\README.md",
+              "RelativeDocumentMoniker": "README.md",
+              "ToolTip": "C:\\Users\\crusthack\\Downloads\\New folder\\Unity2DMulti\\README.md",
+              "RelativeToolTip": "README.md",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAA8AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-02-05T13:18:45.611Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 5,
+              "Title": "ProtobufMessage.cs",
+              "DocumentMoniker": "C:\\Users\\crusthack\\Downloads\\New folder\\Unity2DMulti\\NetworkController\\Message\\ProtobufMessage.cs",
+              "RelativeDocumentMoniker": "NetworkController\\Message\\ProtobufMessage.cs",
+              "ToolTip": "C:\\Users\\crusthack\\Downloads\\New folder\\Unity2DMulti\\NetworkController\\Message\\ProtobufMessage.cs",
+              "RelativeToolTip": "NetworkController\\Message\\ProtobufMessage.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAAGAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-05T12:40:53.398Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
               "Title": "NetworkController.cs",
-              "DocumentMoniker": "C:\\Users\\crusthack\\Documents\\Unity2DMulti\\NetworkController\\NetworkController.cs",
+              "DocumentMoniker": "C:\\Users\\crusthack\\Downloads\\New folder\\Unity2DMulti\\NetworkController\\NetworkController.cs",
               "RelativeDocumentMoniker": "NetworkController\\NetworkController.cs",
-              "ToolTip": "C:\\Users\\crusthack\\Documents\\Unity2DMulti\\NetworkController\\NetworkController.cs",
+              "ToolTip": "C:\\Users\\crusthack\\Downloads\\New folder\\Unity2DMulti\\NetworkController\\NetworkController.cs",
               "RelativeToolTip": "NetworkController\\NetworkController.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-05T12:40:38Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-05T12:40:38Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 4,
               "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Users\\crusthack\\Documents\\Unity2DMulti\\GameClientConsole\\Program.cs",
+              "DocumentMoniker": "C:\\Users\\crusthack\\Downloads\\New folder\\Unity2DMulti\\GameClientConsole\\Program.cs",
               "RelativeDocumentMoniker": "GameClientConsole\\Program.cs",
-              "ToolTip": "C:\\Users\\crusthack\\Documents\\Unity2DMulti\\GameClientConsole\\Program.cs",
+              "ToolTip": "C:\\Users\\crusthack\\Downloads\\New folder\\Unity2DMulti\\GameClientConsole\\Program.cs",
               "RelativeToolTip": "GameClientConsole\\Program.cs",
               "ViewState": "AgIAACgAAAAAAAAAAAAQwIoAAAAcAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-05T12:40:29.651Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-05T12:40:29.651Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "GameServer",
-              "DocumentMoniker": "C:\\Users\\crusthack\\Documents\\Unity2DMulti\\GameServer\\GameServer.csproj",
+              "DocumentIndex": 1,
+              "Title": "GameServer.csproj",
+              "DocumentMoniker": "C:\\Users\\crusthack\\Downloads\\New folder\\Unity2DMulti\\GameServer\\GameServer.csproj",
               "RelativeDocumentMoniker": "GameServer\\GameServer.csproj",
-              "ToolTip": "C:\\Users\\crusthack\\Documents\\Unity2DMulti\\GameServer\\GameServer.csproj",
+              "ToolTip": "C:\\Users\\crusthack\\Downloads\\New folder\\Unity2DMulti\\GameServer\\GameServer.csproj",
               "RelativeToolTip": "GameServer\\GameServer.csproj",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
@@ -90,11 +104,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "ClientConsole",
-              "DocumentMoniker": "C:\\Users\\crusthack\\Documents\\Unity2DMulti\\GameClientConsole\\ClientConsole.csproj",
+              "DocumentIndex": 3,
+              "Title": "ClientConsole.csproj",
+              "DocumentMoniker": "C:\\Users\\crusthack\\Downloads\\New folder\\Unity2DMulti\\GameClientConsole\\ClientConsole.csproj",
               "RelativeDocumentMoniker": "GameClientConsole\\ClientConsole.csproj",
-              "ToolTip": "C:\\Users\\crusthack\\Documents\\Unity2DMulti\\GameClientConsole\\ClientConsole.csproj",
+              "ToolTip": "C:\\Users\\crusthack\\Downloads\\New folder\\Unity2DMulti\\GameClientConsole\\ClientConsole.csproj",
               "RelativeToolTip": "GameClientConsole\\ClientConsole.csproj",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAdAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
@@ -103,20 +117,16 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "NetworkControllerLib",
-              "DocumentMoniker": "C:\\Users\\crusthack\\Documents\\Unity2DMulti\\NetworkController\\NetworkControllerLib.csproj",
+              "DocumentIndex": 2,
+              "Title": "NetworkControllerLib.csproj",
+              "DocumentMoniker": "C:\\Users\\crusthack\\Downloads\\New folder\\Unity2DMulti\\NetworkController\\NetworkControllerLib.csproj",
               "RelativeDocumentMoniker": "NetworkController\\NetworkControllerLib.csproj",
-              "ToolTip": "C:\\Users\\crusthack\\Documents\\Unity2DMulti\\NetworkController\\NetworkControllerLib.csproj",
+              "ToolTip": "C:\\Users\\crusthack\\Downloads\\New folder\\Unity2DMulti\\NetworkController\\NetworkControllerLib.csproj",
               "RelativeToolTip": "NetworkController\\NetworkControllerLib.csproj",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
               "WhenOpened": "2026-02-05T12:31:03.733Z",
               "EditorCaption": ""
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{c6f34f0d-7ae5-4f3a-be61-fe0c21ae9eb8}"
             }
           ]
         }
