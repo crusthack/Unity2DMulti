@@ -40,8 +40,6 @@ public class SceneController : MonoBehaviour
         GameState = 0;
         Time.timeScale = 1f;
 
-        Debug.Log(GamePlayer.GetComponent<Player>().Score);
-
         if (GameManager.Instance.ShouldLoad)
         {
             var gameData = GameManager.Instance.LoadGame(GameManager.Instance.SelectedCharacterIndex);
@@ -50,7 +48,6 @@ public class SceneController : MonoBehaviour
 
                 GamePlayer.transform.position = new Vector3(gameData.posX, gameData.posY, gameData.posZ);
                 GamePlayer.GetComponent<Player>().Score = gameData.score;
-                Debug.Log(GamePlayer.GetComponent<Player>().Score);
 
                 GameManager.Instance.ShouldLoad = false;
             }
@@ -98,7 +95,6 @@ public class SceneController : MonoBehaviour
     {
         if (InputField.isFocused)
             return;
-        Debug.Log("Enter");
         GameManager.Instance.GamePlayer.GetComponent<Player>().DisableInput();
 
         InputField.ActivateInputField();

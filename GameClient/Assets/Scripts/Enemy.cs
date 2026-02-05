@@ -25,11 +25,9 @@ public class Enemy : MonoBehaviour, IDamageable
     public void TakeDamage(Player from, int damage)
     {
         HP -= damage;
-        Debug.Log($"Enemy hit! HP: {HP}");
 
         if (HP <= 0)
         {
-            Debug.Log("Enemy dead!");
             from.AddScore(Score);
             Die();
         }
