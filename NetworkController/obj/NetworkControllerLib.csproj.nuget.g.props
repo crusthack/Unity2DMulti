@@ -18,6 +18,5 @@
   </ImportGroup>
   <PropertyGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
     <PkgGrpc_Tools Condition=" '$(PkgGrpc_Tools)' == '' ">C:\Users\crusthack\.nuget\packages\grpc.tools\2.76.0</PkgGrpc_Tools>
-    <PkgGoogle_Protobuf_Tools Condition=" '$(PkgGoogle_Protobuf_Tools)' == '' ">C:\Users\crusthack\.nuget\packages\google.protobuf.tools\3.33.4</PkgGoogle_Protobuf_Tools>
   </PropertyGroup>
 </Project>

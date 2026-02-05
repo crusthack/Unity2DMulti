@@ -1,15 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "GgHBN6tax7U=",
+  "dgSpecHash": "PTTE03tB0JI=",
   "success": true,
-  "projectFilePath": "C:\\Users\\crusthack\\Documents\\UnityProject\\Unity2DMulti\\GameServer\\GameServer.csproj",
+  "projectFilePath": "C:\\Users\\crusthack\\Documents\\Unity2DMulti\\GameServer\\GameServer.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\crusthack\\.nuget\\packages\\google.protobuf\\3.33.4\\google.protobuf.3.33.4.nupkg.sha512",
-    "C:\\Users\\crusthack\\.nuget\\packages\\google.protobuf.tools\\3.33.4\\google.protobuf.tools.3.33.4.nupkg.sha512",
-    "C:\\Users\\crusthack\\.nuget\\packages\\grpc\\2.46.6\\grpc.2.46.6.nupkg.sha512",
-    "C:\\Users\\crusthack\\.nuget\\packages\\grpc.core\\2.46.6\\grpc.core.2.46.6.nupkg.sha512",
-    "C:\\Users\\crusthack\\.nuget\\packages\\grpc.core.api\\2.46.6\\grpc.core.api.2.46.6.nupkg.sha512",
-    "C:\\Users\\crusthack\\.nuget\\packages\\grpc.tools\\2.76.0\\grpc.tools.2.76.0.nupkg.sha512"
+    "C:\\Users\\crusthack\\.nuget\\packages\\google.protobuf\\3.33.4\\google.protobuf.3.33.4.nupkg.sha512"
   ],
   "logs": []
 }

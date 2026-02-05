@@ -15,21 +15,11 @@
           }
         }
       },
-      "Google.Protobuf.Tools/3.33.4": {
-        "type": "package",
-        "build": {
-          "build/_._": {}
-        },
-        "buildMultiTargeting": {
-          "buildCrossTargeting/_._": {}
-        }
-      },
       "NetworkControllerLib/1.0.0": {
         "type": "project",
-        "framework": ".NETStandard,Version=v2.0",
+        "framework": ".NETCoreApp,Version=v10.0",
         "dependencies": {
-          "Google.Protobuf": "3.33.4",
-          "Google.Protobuf.Tools": "3.33.4"
+          "Google.Protobuf": "3.33.4"
         },
         "compile": {
           "bin/placeholder/NetworkControllerLib.dll": {}
@@ -64,37 +54,6 @@
         "lib/netstandard2.0/Google.Protobuf.xml"
       ]
     },
-    "Google.Protobuf.Tools/3.33.4": {
-      "sha512": "uSVCY7VOznTPm0/f3IbxWAG8f40rR45l3lZj6p/W9xr4rJmPDfKDeLkYuKORXU+xLdZuZrq1zwqOaMVFCd1LeA==",
-      "type": "package",
-      "path": "google.protobuf.tools/3.33.4",
-      "hasTools": true,
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "build/Google.Protobuf.Tools.targets",
-        "buildCrossTargeting/Google.Protobuf.Tools.targets",
-        "google.protobuf.tools.3.33.4.nupkg.sha512",
-        "google.protobuf.tools.nuspec",
-        "tools/google/protobuf/any.proto",
-        "tools/google/protobuf/api.proto",
-        "tools/google/protobuf/descriptor.proto",
-        "tools/google/protobuf/duration.proto",
-        "tools/google/protobuf/empty.proto",
-        "tools/google/protobuf/field_mask.proto",
-        "tools/google/protobuf/source_context.proto",
-        "tools/google/protobuf/struct.proto",
-        "tools/google/protobuf/timestamp.proto",
-        "tools/google/protobuf/type.proto",
-        "tools/google/protobuf/wrappers.proto",
-        "tools/linux_aarch64/protoc",
-        "tools/linux_x64/protoc",
-        "tools/linux_x86/protoc",
-        "tools/macosx_x64/protoc",
-        "tools/windows_x64/protoc.exe",
-        "tools/windows_x86/protoc.exe"
-      ]
-    },
     "NetworkControllerLib/1.0.0": {
       "type": "project",
       "path": "../NetworkController/NetworkControllerLib.csproj",
@@ -113,11 +72,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\crusthack\\Documents\\UnityProject\\Unity2DMulti\\GameClientConsole\\ClientConsole.csproj",
+      "projectUniqueName": "C:\\Users\\crusthack\\Documents\\Unity2DMulti\\GameClientConsole\\ClientConsole.csproj",
       "projectName": "ClientConsole",
-      "projectPath": "C:\\Users\\crusthack\\Documents\\UnityProject\\Unity2DMulti\\GameClientConsole\\ClientConsole.csproj",
+      "projectPath": "C:\\Users\\crusthack\\Documents\\Unity2DMulti\\GameClientConsole\\ClientConsole.csproj",
       "packagesPath": "C:\\Users\\crusthack\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\crusthack\\Documents\\UnityProject\\Unity2DMulti\\GameClientConsole\\obj\\",
+      "outputPath": "C:\\Users\\crusthack\\Documents\\Unity2DMulti\\GameClientConsole\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -132,15 +91,14 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-        "C:\\Program Files\\dotnet\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
         "net10.0": {
           "targetAlias": "net10.0",
           "projectReferences": {
-            "C:\\Users\\crusthack\\Documents\\UnityProject\\Unity2DMulti\\NetworkController\\NetworkControllerLib.csproj": {
-              "projectPath": "C:\\Users\\crusthack\\Documents\\UnityProject\\Unity2DMulti\\NetworkController\\NetworkControllerLib.csproj"
+            "C:\\Users\\crusthack\\Documents\\Unity2DMulti\\NetworkController\\NetworkControllerLib.csproj": {
+              "projectPath": "C:\\Users\\crusthack\\Documents\\Unity2DMulti\\NetworkController\\NetworkControllerLib.csproj"
             }
           }
         }

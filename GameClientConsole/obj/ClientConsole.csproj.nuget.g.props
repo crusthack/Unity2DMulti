@@ -13,7 +13,4 @@
     <SourceRoot Include="C:\Users\crusthack\.nuget\packages\" />
     <SourceRoot Include="C:\Program Files (x86)\Microsoft Visual Studio\Shared\NuGetPackages\" />
   </ItemGroup>
-  <PropertyGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
-    <PkgGoogle_Protobuf_Tools Condition=" '$(PkgGoogle_Protobuf_Tools)' == '' ">C:\Users\crusthack\.nuget\packages\google.protobuf.tools\3.33.4</PkgGoogle_Protobuf_Tools>
-  </PropertyGroup>
 </Project>
