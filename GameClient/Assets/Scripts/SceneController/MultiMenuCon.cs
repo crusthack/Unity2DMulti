@@ -34,6 +34,10 @@ public class MultiMenuCon : MonoBehaviour
         GameManager.Instance.NetworkManager.OnMessageRecv -= HandleMesssage;
     }
 
+    private void Update()
+    {
+    }
+
     void Start()
     {
         Username.text = GameManager.Instance.Session.GetUsername();
@@ -51,7 +55,7 @@ public class MultiMenuCon : MonoBehaviour
 
     public void OnReload()
     {
-        foreach(GameObject room in RoomList)
+        foreach (GameObject room in RoomList)
         {
             Destroy(room);
         }
@@ -62,7 +66,7 @@ public class MultiMenuCon : MonoBehaviour
 
     public void ShowRoomInfo(string roomName, string hostName)
     {
-        foreach(var p in PlayerList)
+        foreach (var p in PlayerList)
         {
             Destroy(p);
         }
@@ -72,11 +76,11 @@ public class MultiMenuCon : MonoBehaviour
         foreach (GameObject o in RoomList)
         {
             var room = o.GetComponent<RoomButton>();
-            if(room.RoomNameText.text == roomName && room.HostName.text == hostName)
+            if (room.RoomNameText.text == roomName && room.HostName.text == hostName)
             {
                 RoomName.text = room.RoomNameText.text;
                 HostName.text = room.HostName.text;
-                foreach(var player in room.Players)
+                foreach (var player in room.Players)
                 {
                     var p = Instantiate(UserInfoPrefab, Players);
                     p.GetComponent<PlayerInfoUI>().SetName(player);
@@ -90,7 +94,7 @@ public class MultiMenuCon : MonoBehaviour
 
     public void OnJoinRoom()
     {
-        if(SelectedRoom == null)
+        if (SelectedRoom == null)
         {
             return;
         }

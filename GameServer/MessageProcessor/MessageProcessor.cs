@@ -24,6 +24,7 @@ namespace GameServer.MessageProcessor
 
         public void HandleMessage(ClientSession session, ProtobufMessage message)
         {
+
             if (message != null)
             {
                 session.LastActiveTime = message.Header.Timestamp;

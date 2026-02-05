@@ -138,9 +138,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 609a1080f904e244dada7449939dcbc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player
+  MovDir: {x: 0, y: 0}
   Speed: 8
   IsLookingRight: 1
   Score: 0
+  CurrentMap: Map_A
+  PrefabID: 0
+  UserName: 
+  Input: {fileID: 0}
+  nameText: {fileID: 0}
   BonusScoreMultiplier: 1
 --- !u!61 &7792304716192176813
 BoxCollider2D:

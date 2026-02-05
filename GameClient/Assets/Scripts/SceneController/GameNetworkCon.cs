@@ -1,8 +1,10 @@
-using UnityEngine;
-using System.Collections.Generic;
 using NetworkController.Message;
 using Protos;
+using System.Collections.Generic;
+using System.Globalization;
 using TMPro;
+using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class GameNetworkCon : MonoBehaviour
 {
@@ -21,38 +23,23 @@ public class GameNetworkCon : MonoBehaviour
 
     void Awake()
     {
-        if (!GameManager.Instance.Session.IsMulti)
-        {
-            return;
-        }
+        GameManager.Instance.NetworkCon = this;
         GameManager.Instance.NetworkManager.OnMessageRecv += HandleMessage;
     }
 
     private void OnDestroy()
     {
-        if (!GameManager.Instance.Session.IsMulti)
-        {
-            return;
-        }
         GameManager.Instance.NetworkManager.OnMessageRecv -= HandleMessage;
     }
 
     void Start()
     {
         if (!GameManager.Instance.Session.IsMulti)
-        {
             return;
-        }
 
         scoreboard.SetActive(true);
-        if (GameManager.Instance.Session.IsHost)
-        {
-            Debug.Log("This is host");
-        }
-        else
-        {
-            Debug.Log("This is guest");
-        }
+
+        Debug.Log(GameManager.Instance.Session.IsHost ? "This is host" : "This is guest");
     }
 
     void Update()
@@ -69,57 +56,63 @@ public class GameNetworkCon : MonoBehaviour
 
     void CheckVisibility()
     {
-        foreach(var player in Players.Values)
+        var localPlayer = GameManager.Instance.GamePlayer?.GetComponent<Player>();
+        if (localPlayer == null) return;
+
+        foreach (var obj in Players.Values)
         {
-            if(player.GetComponent<Player>().CurrentMap == GameManager.Instance.GamePlayer.GetComponent<Player>().CurrentMap)
-            {
-                player.SetActive(true);
-            }
-            else
-            {
-                player.SetActive(false);
-            }
+            if (obj == null) continue;
+
+            var p = obj.GetComponent<Player>();
+            if (p == null) continue;
+
+            bool shouldActive = p.CurrentMap == localPlayer.CurrentMap;
+            if (obj.activeSelf != shouldActive)
+                obj.SetActive(shouldActive);
         }
     }
 
     void UpdateScoreboard()
     {
-        List<Player> players = new List<Player>();
-        foreach(var p in Players.Values)
-        {
-            players.Add(p.GetComponent<Player>());
-        }
-        players.Add(GameManager.Instance.GamePlayer.GetComponent<Player>());
+        if (scores == null || scores.Count == 0)
+            return;
 
-        players.Sort((a, b) =>
-        {
-            return (int)(a.Score - b.Score);
-        });
+        List<Player> players = new();
 
-        foreach(var s in scores)
+        foreach (var obj in Players.Values)
         {
-            s.SetActive(false);
+            if (obj == null) continue;
+            var p = obj.GetComponent<Player>();
+            if (p != null)
+                players.Add(p);
         }
 
-        int index = 0;
-        foreach (var p in players)
+        var localPlayer = GameManager.Instance.GamePlayer?.GetComponent<Player>();
+        if (localPlayer != null)
+            players.Add(localPlayer);
+
+        players.Sort((a, b) => b.Score.CompareTo(a.Score));
+
+        foreach (var s in scores)
+            if (s != null) s.SetActive(false);
+
+        for (int i = 0; i < players.Count && i < scores.Count; i++)
         {
-            scores[index].transform.GetChild(0).GetComponent<TMP_Text>().text = p.UserName + ": " + p.Score;
-            scores[index].SetActive(true);
-            index++;
-            if(index == scores.Count)
-            {
-                break;
-            }
+            if (scores[i] == null) continue;
+
+            scores[i].transform.GetChild(0)
+                .GetComponent<TMP_Text>().text =
+                $"{players[i].UserName}: {players[i].Score}";
+
+            scores[i].SetActive(true);
         }
     }
 
     void SendSyncMessage()
     {
         if (Time.time - lastSyncTime < SyncInterval)
-        {
             return;
-        }
+
         lastSyncTime = Time.time;
 
         // 자신 게임의 상태를 송신
@@ -168,7 +161,14 @@ public class GameNetworkCon : MonoBehaviour
         switch (message.PayloadCase)
         {
             case GameMessage.PayloadOneofCase.GameSync:
-                SyncGame(message);
+                if (GameManager.Instance.Session.IsHost)
+                {
+                    HostPlayerSyncGame(message);
+                }
+                else
+                {
+                    SyncGame(message);
+                }
                 break;
             case GameMessage.PayloadOneofCase.Rpc:
                 HandleRPC(message.Rpc);
@@ -176,27 +176,14 @@ public class GameNetworkCon : MonoBehaviour
         }
     }
 
-    void SyncGame(GameMessage msg)
+    // 호스트 플레이어 전용 
+    void HostPlayerSyncGame(GameMessage msg)
     {
-        Debug.Log("Received Sync Message");
         var message = msg.GameSync;
 
-        if(message.PlayerId == 0 && GameManager.Instance.Session.IsHost)
+        if (msg.GameSync.PlayerId == 0)
         {
-            var g = new GameMessage
-            {
-                SessionID = msg.SessionID,
-                DoBroadcast = false,
-                Rpc = new RPC
-                {
-                    PlayerId = NextSessionID,
-                    RpcName = "SetPlayerID",
-                }
-            };
-
-            var m = new ProtobufMessage(g, ProtobufMessage.OpCode.Game);
-            GameManager.Instance.NetworkManager.SendMessage(m);
-            message.PlayerId = NextSessionID++;
+            message.PlayerId = InitClient(msg);
         }
 
         if (Players.TryGetValue(message.PlayerId, out var p))
@@ -205,18 +192,179 @@ public class GameNetworkCon : MonoBehaviour
         }
         else
         {
+            if (message.PlayerId == playerID)
+            {
+                return;
+            }
+
             var newPlayer = sceneController.SpawnPlayer(message);
+            newPlayer.GetComponent<Player>().UserName = message.UserName;
+            newPlayer.GetComponent<Player>().Sync(message);
             Players.Add(message.PlayerId, newPlayer);
+            Debug.Log("New player: " + message.UserName + "join to game");
+        }
+    }
+
+    int InitClient(GameMessage msg)
+    {
+        var g = new GameMessage
+        {
+            SessionID = msg.SessionID,
+            DoBroadcast = false,
+            Rpc = new RPC
+            {
+                PlayerId = NextSessionID++,
+                RpcName = "SetPlayerID",
+            }
+        };
+
+        Debug.Log(msg.SessionID + " New Client try To Join   " + g.Rpc.PlayerId);
+        Debug.Log($"Send Set Playr ID RPC to {g.SessionID}");
+        var m = new ProtobufMessage(g, ProtobufMessage.OpCode.Game);
+        GameManager.Instance.NetworkManager.SendMessage(m);
+        return g.Rpc.PlayerId;
+    }
+
+    void SyncGame(GameMessage msg)
+    {
+        var message = msg.GameSync;
+
+        // 아직 호스트 유저로부터 번호 부여 안 받은 상태
+        if (playerID == 0)
+        {
+            return;
+        }
+
+        if (Players.TryGetValue(message.PlayerId, out var p))
+        {
+            p.GetComponent<Player>().Sync(message);
+        }
+        else
+        {
+            if (message.PlayerId == playerID)
+            {
+                return;
+            }
+
+            var newPlayer = sceneController.SpawnPlayer(message);
             newPlayer.GetComponent<Player>().Sync(message);
             newPlayer.GetComponent<Player>().UserName = message.UserName;
+            Players.Add(message.PlayerId, newPlayer);
+            Debug.Log("New player: " + message.UserName + "join to game");
         }
     }
 
     void HandleRPC(RPC message)
     {
-        if(message.RpcName == "SetPlayerID")
+        if (message.PlayerId == playerID)
         {
-            playerID = message.PlayerId;
+            return;
         }
+
+        switch (message.RpcName)
+        {
+            case "SetPlayerID":
+                {
+                    playerID = message.PlayerId;
+                }
+                Debug.Log("Set Player ID: " + playerID);
+                break;
+            case "Move":
+                ProcessRPCMove(message);
+                break;
+            case "Attack":
+                ProcessRPCAttack(message);
+                break;
+        }
+    }
+
+    public void RPC_Move(InputValue value)
+    {
+        if (!GameManager.Instance.Session.IsMulti)
+        {
+            return;
+        }
+
+        var x = value.Get<Vector2>().x;
+        var y = value.Get<Vector2>().y;
+
+        var g = new GameMessage
+        {
+            Rpc = new RPC
+            {
+                PlayerId = playerID,
+                RpcName = "Move",
+                Values = { x.ToString(), y.ToString() }
+            }
+        };
+
+        if (GameManager.Instance.Session.IsHost)
+        {
+            g.DoBroadcast = true;
+        }
+
+        var m = new ProtobufMessage(g, ProtobufMessage.OpCode.Game);
+        GameManager.Instance.NetworkManager.SendMessage(m);
+    }
+
+    void ProcessRPCMove(RPC message)
+    {
+        if (!Players.TryGetValue(message.PlayerId, out var p))
+            return;
+
+        if (!float.TryParse(message.Values[0], NumberStyles.Float, CultureInfo.InvariantCulture, out var x))
+            return;
+
+        if (!float.TryParse(message.Values[1], NumberStyles.Float, CultureInfo.InvariantCulture, out var y))
+            return;
+
+        p.GetComponent<Player>().MovDir = new Vector2(x, y);
+
+        if (GameManager.Instance.Session.IsHost)
+        {
+            GameManager.Instance.NetworkManager.SendMessage(
+                new ProtobufMessage(new GameMessage
+                {
+                    DoBroadcast = true,
+                    Rpc = message
+                }, ProtobufMessage.OpCode.Game));
+        }
+    }
+
+    void ProcessRPCAttack(RPC message)
+    {
+        if (!Players.TryGetValue(message.PlayerId, out var p))
+            return;
+
+        p.GetComponent<Player>().Attack();
+
+        if (GameManager.Instance.Session.IsHost)
+        {
+            GameManager.Instance.NetworkManager.SendMessage(
+                new ProtobufMessage(new GameMessage
+                {
+                    DoBroadcast = true,
+                    Rpc = message
+                }, ProtobufMessage.OpCode.Game));
+        }
+    }
+
+    public void RPC_Attack()
+    {
+        if (!GameManager.Instance.Session.IsMulti)
+            return;
+
+        var g = new GameMessage
+        {
+            Rpc = new RPC
+            {
+                PlayerId = playerID,
+                RpcName = "Attack",
+            },
+            DoBroadcast = GameManager.Instance.Session.IsHost
+        };
+
+        GameManager.Instance.NetworkManager.SendMessage(
+            new ProtobufMessage(g, ProtobufMessage.OpCode.Game));
     }
 }

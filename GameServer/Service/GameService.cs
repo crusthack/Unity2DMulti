@@ -1,11 +1,6 @@
 ﻿using Google.Protobuf;
 using NetworkController.Message;
 using Protos;
-using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Reflection.Emit;
-using System.Text;
 
 namespace GameServer.Service
 {
@@ -44,7 +39,6 @@ namespace GameServer.Service
                 foreach(var player in room.Players)
                 {
                     Owner.SendMessage(player, new ProtobufMessage(message, ProtobufMessage.OpCode.Game));
-                    Console.WriteLine($"{session.SessionID}: Sync message send to {player.UserName}");
                 }
             }
             else
@@ -59,9 +53,8 @@ namespace GameServer.Service
         // 참가 클라이언트 
         void ProcessClientsync(ClientSession session, GameMessage message, GameRoom room)
         {
-            Console.WriteLine(2);
-
             message.SessionID = (int)session.SessionID;
+            message.UserName = session.UserName;
             Owner.SendMessage(room.Hostuser, new ProtobufMessage(message, ProtobufMessage.OpCode.Game));
         }
 
@@ -99,6 +92,9 @@ namespace GameServer.Service
                 if (Owner.TryGetSession((uint)message.SessionID, out var s))
                 {
                     Owner.SendMessage(s, new ProtobufMessage(message, ProtobufMessage.OpCode.Game));
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine($"Send RPC message, from: {session.UserName}. to: {s.UserName}. RPC: {message.Rpc.RpcName}. {message.Rpc.PlayerId}");
+                    Console.ForegroundColor = ConsoleColor.White;
                 }
             }
         }

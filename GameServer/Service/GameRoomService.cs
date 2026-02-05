@@ -14,7 +14,7 @@ namespace GameServer.Service
         public GameRoomService(Server owner)
         {
             Owner = owner;
-            Owner.OnDisconnect += RemoveRoom;
+            Owner.OnDisconnect += ExitRoom;
 
             for (int i = 0; i < 13; ++i)
             {
@@ -69,7 +69,7 @@ namespace GameServer.Service
             //    return;
             //}
 
-            if(session.PlayingRoom != null)
+            if (session.PlayingRoom != null)
             {
                 Console.WriteLine(session.UserName + " session already in game");
                 return;
@@ -119,12 +119,25 @@ namespace GameServer.Service
             Owner.SendMessage(session, msg);
         }
 
-        void RemoveRoom(ClientSession session)
+        void ExitRoom(ClientSession session)
         {
-            // 접속해있는 다른 유저들 퇴장 처리
-            if (Rooms.TryRemove(session.UserName, out var room))
+            if(session.PlayingRoom == null)
             {
-                Console.WriteLine($"{session.UserName}'s room removed");
+                return;
+            }
+
+            if (session.PlayingRoom.Hostuser == session)
+            {
+                // 접속해있는 다른 유저들 퇴장 처리
+                if (Rooms.TryRemove(session.UserName, out var room))
+                {
+                    Console.WriteLine($"{session.UserName}'s room removed");
+                }
+            }
+
+            else
+            {
+                session.PlayingRoom.Exit(session);
             }
         }
     }
@@ -144,6 +157,20 @@ namespace GameServer.Service
         public void JoinRoom(ClientSession session)
         {
             Players.Add(session);
+        }
+
+        public void Exit(ClientSession session)
+        {
+            if(Players.Remove(session))
+            {
+                //var message = new ProtobufMessage(
+                //    new GameMessage
+                //    {
+                //        Rpc = new 
+                //    })
+
+                Console.WriteLine($"{session.UserName}: leave game room {RoomName}");
+            }
         }
     }
 }

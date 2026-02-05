@@ -106,7 +106,7 @@ public class SceneController : MonoBehaviour
 
     public GameObject SpawnPlayer(SyncMessage message)
     {
-        var player = Instantiate(Player[message.PlayerId]);
+        var player = Instantiate(Player[message.PrefabId]);
         player.transform.position = new Vector2(message.PositionX, message.PositionY);
         player.SetActive(true);
 

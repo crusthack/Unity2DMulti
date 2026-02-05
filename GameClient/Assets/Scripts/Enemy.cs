@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public class Enemy : MonoBehaviour, IDamageable
 {
@@ -13,6 +14,8 @@ public class Enemy : MonoBehaviour, IDamageable
 
     public int HP = 30;
     public int Score = 10;
+
+    public event Action OnDie = null;
 
     private void OnEnable()
     {
@@ -35,6 +38,7 @@ public class Enemy : MonoBehaviour, IDamageable
     void Die()
     {
         gameObject.SetActive(false);
+        OnDie?.Invoke();
     }
 
     void Update()
@@ -97,7 +101,7 @@ public class Enemy : MonoBehaviour, IDamageable
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            gameObject.SetActive(false);
+            Die();
         }
     }
 }

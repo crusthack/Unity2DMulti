@@ -182,7 +182,14 @@ namespace GameServer
         public void SendMessage(ClientSession session, ProtobufMessage message)
         {
             Console.WriteLine($"Send Message To {session.SessionID}, message type: {message.Header.OpCode.ToString()}, messasge size: {message.GetSize()}");
-            Netcon.SendMessageTo(session.SessionID, message);
+            try
+            {
+                Netcon.SendMessageTo(session.SessionID, message);
+            }
+            catch (Exception e)
+            {
+                // 없는 세션에 송신 시도
+            }
         }
     }
 }

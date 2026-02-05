@@ -21,10 +21,6 @@ public class EnemySpawner : MonoBehaviour
 
         EnemyPool = new();
     }
-    void Start()
-    {
-
-    }
 
     void Update()
     {
@@ -62,6 +58,7 @@ public class EnemySpawner : MonoBehaviour
                 }
             }
             var enemy = Instantiate(EnemyPrefab, spawnPoint, Quaternion.identity, this.transform);
+            enemy.GetComponent<Enemy>().OnDie += OnEnemyDie;
 
             EnemyPool.Add(enemy);
         }
@@ -89,5 +86,10 @@ public class EnemySpawner : MonoBehaviour
             radius,
             Physics2D.AllLayers
         );
+    }
+
+    void OnEnemyDie()
+    {
+        CurrentEnemyCount--;
     }
 }

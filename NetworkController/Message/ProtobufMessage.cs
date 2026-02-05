@@ -82,12 +82,22 @@ namespace NetworkController.Message
                 return 0;
             }
 
-            var payloadBytes = new byte[messageHeader.PayloadSize];
+            try
+            {
+                var payloadBytes = new byte[messageHeader.PayloadSize];
             Buffer.BlockCopy(data, ProtobufMessageHeader.HeaderSize, payloadBytes, 0, messageHeader.PayloadSize);
             var payload = ProtobufParserRegistry.Parse(messageHeader.OpCode, payloadBytes);
             msg = new ProtobufMessage(payload, (OpCode)messageHeader.OpCode);
 
             return ProtobufMessageHeader.HeaderSize + messageHeader.PayloadSize;
+            }
+            catch (Exception ex)
+            {
+                Console.ForegroundColor = ConsoleColor.Blue;
+                Console.WriteLine(messageHeader.PayloadSize);
+                Console.ForegroundColor = ConsoleColor.White;
+                throw new Exception("!!!");
+            }
         }
     }
 

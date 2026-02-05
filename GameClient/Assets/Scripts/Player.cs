@@ -1,11 +1,12 @@
 using Protos;
 using System.Collections;
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour
 {
-    Vector2 MovDir;
+    public Vector2 MovDir;
     public float Speed = 5f;
     public bool IsLookingRight = true;
     public float Score = 0;
@@ -27,7 +28,6 @@ public class Player : MonoBehaviour
     public void AddScore(float value)
     {
         Score += value * BonusScoreMultiplier;
-        Debug.Log("Score updated: " + Score);
     }
 
     public void Update()
@@ -55,9 +55,18 @@ public class Player : MonoBehaviour
         {
             IsLookingRight = true;
         }
+
+        GameManager.Instance.NetworkCon?.RPC_Move(value);
     }
 
     public void OnAttack()
+    {
+        Skill.UseActiveSkill();
+
+        GameManager.Instance.NetworkCon?.RPC_Attack();
+    }
+
+    public void Attack()
     {
         Skill.UseActiveSkill();
     }
@@ -67,7 +76,6 @@ public class Player : MonoBehaviour
         switch (collision.gameObject.tag)
         {
             case "Enemy":
-                Debug.Log("Ouch!!");
                 Score -= 5;
                 if (Score < 0) Score = 0;
                 break;
@@ -95,7 +103,7 @@ public class Player : MonoBehaviour
             MoveX = (int)MovDir.x,  
             MoveY = (int)MovDir.y,
             CurrentMap = CurrentMap,
-            UserName = GameManager.Instance.Session.GetUsername(),
+            UserName = UserName,
             Score = (int)Score,
         };
 
@@ -107,6 +115,7 @@ public class Player : MonoBehaviour
         transform.position = new Vector3(m.PositionX, m.PositionY);
         MovDir = new Vector2(m.MoveX, m.MoveY);
         CurrentMap = m.CurrentMap;
+        PrefabID = m.PrefabId;
         Score = m.Score;
     }
 }

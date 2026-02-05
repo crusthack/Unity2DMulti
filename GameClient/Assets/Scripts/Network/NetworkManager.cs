@@ -51,7 +51,7 @@ public class NetworkManager : MonoBehaviour
                 {
                     return;
                 }
-                OnMessageRecv.Invoke(message);
+                OnMessageRecv?.Invoke(message);
             }
         }
 

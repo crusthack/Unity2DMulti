@@ -1,6 +1,7 @@
 using Protos;
 using System.IO;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -17,8 +18,9 @@ public class GameManager : MonoBehaviour
     public float TempScore;
 
     public NetworkManager NetworkManager;
-    MainMenuHandler MessageHandler;
     public GameSession Session;
+
+    public GameNetworkCon NetworkCon;
 
     void Awake()
     {
@@ -60,9 +62,9 @@ public class GameManager : MonoBehaviour
         return new GameData();
     }
 
-    public void UpdateMessageHandler(MainMenuHandler messageHandler)
+    public void GoToMenu()
     {
-        MessageHandler = messageHandler;
+        SceneManager.LoadScene("MainMenu");
     }
 }
 
