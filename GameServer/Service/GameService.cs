@@ -34,7 +34,11 @@ namespace GameServer.Service
         // 호스트 유저
         void ProcessHostsync(ClientSession session, GameMessage message, GameRoom room)
         {
-            if(message.DoBroadcast)
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.WriteLine($"from {session.SessionID}: {message}");
+            Console.ForegroundColor = ConsoleColor.White;
+
+            if (message.DoBroadcast)
             {
                 foreach(var player in room.Players)
                 {
@@ -103,6 +107,7 @@ namespace GameServer.Service
         void ProcessClientRpc(ClientSession session, GameMessage message, GameRoom room)
         {
             message.SessionID = (int)session.SessionID;
+            message.UserName = session.UserName;
             Owner.SendMessage(room.Hostuser, new ProtobufMessage(message, ProtobufMessage.OpCode.Game));
         }
     }

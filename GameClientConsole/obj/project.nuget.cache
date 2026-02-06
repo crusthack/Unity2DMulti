@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "gNBAbbNj49E=",
+  "dgSpecHash": "SwREWTyoRw8=",
   "success": true,
-  "projectFilePath": "C:\\Users\\crusthack\\Downloads\\New folder\\Unity2DMulti\\GameClientConsole\\ClientConsole.csproj",
+  "projectFilePath": "C:\\Users\\crusthack\\Documents\\Unity2DMulti\\GameClientConsole\\ClientConsole.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\crusthack\\.nuget\\packages\\google.protobuf\\3.33.4\\google.protobuf.3.33.4.nupkg.sha512"
   ],

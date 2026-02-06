@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\crusthack\\Downloads\\New folder\\Unity2DMulti\\GameServer\\GameServer.csproj": {}
+    "C:\\Users\\crusthack\\Documents\\Unity2DMulti\\GameServer\\GameServer.csproj": {}
   },
   "projects": {
-    "C:\\Users\\crusthack\\Downloads\\New folder\\Unity2DMulti\\GameServer\\GameServer.csproj": {
+    "C:\\Users\\crusthack\\Documents\\Unity2DMulti\\GameServer\\GameServer.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\crusthack\\Downloads\\New folder\\Unity2DMulti\\GameServer\\GameServer.csproj",
+        "projectUniqueName": "C:\\Users\\crusthack\\Documents\\Unity2DMulti\\GameServer\\GameServer.csproj",
         "projectName": "GameServer",
-        "projectPath": "C:\\Users\\crusthack\\Downloads\\New folder\\Unity2DMulti\\GameServer\\GameServer.csproj",
+        "projectPath": "C:\\Users\\crusthack\\Documents\\Unity2DMulti\\GameServer\\GameServer.csproj",
         "packagesPath": "C:\\Users\\crusthack\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\crusthack\\Downloads\\New folder\\Unity2DMulti\\GameServer\\obj\\",
+        "outputPath": "C:\\Users\\crusthack\\Documents\\Unity2DMulti\\GameServer\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -32,8 +32,8 @@
           "net10.0": {
             "targetAlias": "net10.0",
             "projectReferences": {
-              "C:\\Users\\crusthack\\Downloads\\New folder\\Unity2DMulti\\NetworkController\\NetworkControllerLib.csproj": {
-                "projectPath": "C:\\Users\\crusthack\\Downloads\\New folder\\Unity2DMulti\\NetworkController\\NetworkControllerLib.csproj"
+              "C:\\Users\\crusthack\\Documents\\Unity2DMulti\\NetworkController\\NetworkControllerLib.csproj": {
+                "projectPath": "C:\\Users\\crusthack\\Documents\\Unity2DMulti\\NetworkController\\NetworkControllerLib.csproj"
               }
             }
           }
@@ -347,14 +347,14 @@
         }
       }
     },
-    "C:\\Users\\crusthack\\Downloads\\New folder\\Unity2DMulti\\NetworkController\\NetworkControllerLib.csproj": {
+    "C:\\Users\\crusthack\\Documents\\Unity2DMulti\\NetworkController\\NetworkControllerLib.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\crusthack\\Downloads\\New folder\\Unity2DMulti\\NetworkController\\NetworkControllerLib.csproj",
+        "projectUniqueName": "C:\\Users\\crusthack\\Documents\\Unity2DMulti\\NetworkController\\NetworkControllerLib.csproj",
         "projectName": "NetworkControllerLib",
-        "projectPath": "C:\\Users\\crusthack\\Downloads\\New folder\\Unity2DMulti\\NetworkController\\NetworkControllerLib.csproj",
+        "projectPath": "C:\\Users\\crusthack\\Documents\\Unity2DMulti\\NetworkController\\NetworkControllerLib.csproj",
         "packagesPath": "C:\\Users\\crusthack\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\crusthack\\Downloads\\New folder\\Unity2DMulti\\NetworkController\\obj\\",
+        "outputPath": "C:\\Users\\crusthack\\Documents\\Unity2DMulti\\NetworkController\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

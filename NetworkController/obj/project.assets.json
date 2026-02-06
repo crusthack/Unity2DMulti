@@ -111,11 +111,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\crusthack\\Downloads\\New folder\\Unity2DMulti\\NetworkController\\NetworkControllerLib.csproj",
+      "projectUniqueName": "C:\\Users\\crusthack\\Documents\\Unity2DMulti\\NetworkController\\NetworkControllerLib.csproj",
       "projectName": "NetworkControllerLib",
-      "projectPath": "C:\\Users\\crusthack\\Downloads\\New folder\\Unity2DMulti\\NetworkController\\NetworkControllerLib.csproj",
+      "projectPath": "C:\\Users\\crusthack\\Documents\\Unity2DMulti\\NetworkController\\NetworkControllerLib.csproj",
       "packagesPath": "C:\\Users\\crusthack\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\crusthack\\Downloads\\New folder\\Unity2DMulti\\NetworkController\\obj\\",
+      "outputPath": "C:\\Users\\crusthack\\Documents\\Unity2DMulti\\NetworkController\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

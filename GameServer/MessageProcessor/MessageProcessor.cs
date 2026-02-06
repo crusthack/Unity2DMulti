@@ -13,7 +13,7 @@ namespace GameServer.MessageProcessor
         ChattingMessageHandler ChattingHandler;
         RoomMessageHandler RoomMessageHandler;
         GameMessageHandler GameMessageHandler;
-        public MessageProcessor(Server server) 
+        public MessageProcessor(Server server)
         {
             Server = server;
             SystemHandler = new SystemMessageHandler(server);
@@ -24,7 +24,6 @@ namespace GameServer.MessageProcessor
 
         public void HandleMessage(ClientSession session, ProtobufMessage message)
         {
-
             if (message != null)
             {
                 session.LastActiveTime = message.Header.Timestamp;

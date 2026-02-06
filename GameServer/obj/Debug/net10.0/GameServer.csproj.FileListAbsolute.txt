@@ -45,23 +45,3 @@ C:\Users\crusthack\Documents\Unity2DMulti\GameServer\obj\Debug\net10.0\GameServe
 C:\Users\crusthack\Documents\Unity2DMulti\GameServer\obj\Debug\net10.0\GameServer.pdb
 C:\Users\crusthack\Documents\Unity2DMulti\GameServer\obj\Debug\net10.0\GameServer.genruntimeconfig.cache
 C:\Users\crusthack\Documents\Unity2DMulti\GameServer\obj\Debug\net10.0\ref\GameServer.dll
-C:\Users\crusthack\Downloads\New folder\Unity2DMulti\GameServer\bin\Debug\net10.0\GameServer.exe
-C:\Users\crusthack\Downloads\New folder\Unity2DMulti\GameServer\bin\Debug\net10.0\GameServer.deps.json
-C:\Users\crusthack\Downloads\New folder\Unity2DMulti\GameServer\bin\Debug\net10.0\GameServer.runtimeconfig.json
-C:\Users\crusthack\Downloads\New folder\Unity2DMulti\GameServer\bin\Debug\net10.0\GameServer.dll
-C:\Users\crusthack\Downloads\New folder\Unity2DMulti\GameServer\bin\Debug\net10.0\GameServer.pdb
-C:\Users\crusthack\Downloads\New folder\Unity2DMulti\GameServer\bin\Debug\net10.0\Google.Protobuf.dll
-C:\Users\crusthack\Downloads\New folder\Unity2DMulti\GameServer\bin\Debug\net10.0\NetworkControllerLib.dll
-C:\Users\crusthack\Downloads\New folder\Unity2DMulti\GameServer\bin\Debug\net10.0\NetworkControllerLib.pdb
-C:\Users\crusthack\Downloads\New folder\Unity2DMulti\GameServer\obj\Debug\net10.0\GameServer.csproj.AssemblyReference.cache
-C:\Users\crusthack\Downloads\New folder\Unity2DMulti\GameServer\obj\Debug\net10.0\GameServer.GeneratedMSBuildEditorConfig.editorconfig
-C:\Users\crusthack\Downloads\New folder\Unity2DMulti\GameServer\obj\Debug\net10.0\GameServer.AssemblyInfoInputs.cache
-C:\Users\crusthack\Downloads\New folder\Unity2DMulti\GameServer\obj\Debug\net10.0\GameServer.AssemblyInfo.cs
-C:\Users\crusthack\Downloads\New folder\Unity2DMulti\GameServer\obj\Debug\net10.0\GameServer.csproj.CoreCompileInputs.cache
-C:\Users\crusthack\Downloads\New folder\Unity2DMulti\GameServer\obj\Debug\net10.0\GameServer.sourcelink.json
-C:\Users\crusthack\Downloads\New folder\Unity2DMulti\GameServer\obj\Debug\net10.0\GameServer.csproj.Up2Date
-C:\Users\crusthack\Downloads\New folder\Unity2DMulti\GameServer\obj\Debug\net10.0\GameServer.dll
-C:\Users\crusthack\Downloads\New folder\Unity2DMulti\GameServer\obj\Debug\net10.0\refint\GameServer.dll
-C:\Users\crusthack\Downloads\New folder\Unity2DMulti\GameServer\obj\Debug\net10.0\GameServer.pdb
-C:\Users\crusthack\Downloads\New folder\Unity2DMulti\GameServer\obj\Debug\net10.0\GameServer.genruntimeconfig.cache
-C:\Users\crusthack\Downloads\New folder\Unity2DMulti\GameServer\obj\Debug\net10.0\ref\GameServer.dll

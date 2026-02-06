@@ -1,5 +1,6 @@
 using NetworkController.Message;
 using Protos;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
 using TMPro;
@@ -11,9 +12,8 @@ public class GameNetworkCon : MonoBehaviour
     public GameObject scoreboard;
     public List<GameObject> scores;
 
-    int playerID = 0; // hostUser = 0
-    Dictionary<int, GameObject> Players = new();
-    int NextSessionID = 1;
+    int playerID = -1; // hostUser = 0, unauthorized = -1
+    ConcurrentDictionary<int, GameObject> Players = new();    // key = sessionid
 
     public float SyncInterval = 1;
     private float lastSyncTime = 0;
@@ -142,6 +142,7 @@ public class GameNetworkCon : MonoBehaviour
 
                 var msg = new ProtobufMessage(gameMessage, ProtobufMessage.OpCode.Game);
                 GameManager.Instance.NetworkManager.SendMessage(msg);
+                Debug.Log(gameMessage.ToString());
             }
         }
     }
@@ -181,27 +182,19 @@ public class GameNetworkCon : MonoBehaviour
     {
         var message = msg.GameSync;
 
-        if (msg.GameSync.PlayerId == 0)
-        {
-            message.PlayerId = InitClient(msg);
-        }
-
-        if (Players.TryGetValue(message.PlayerId, out var p))
+        if (Players.TryGetValue(msg.SessionID, out var p))
         {
             p.GetComponent<Player>().Sync(message);
         }
         else
         {
-            if (message.PlayerId == playerID)
-            {
-                return;
-            }
-
             var newPlayer = sceneController.SpawnPlayer(message);
             newPlayer.GetComponent<Player>().UserName = message.UserName;
+
             newPlayer.GetComponent<Player>().Sync(message);
-            Players.Add(message.PlayerId, newPlayer);
+            Players.TryAdd(msg.SessionID, newPlayer);
             Debug.Log("New player: " + message.UserName + "join to game");
+            InitClient(msg);
         }
     }
 
@@ -213,7 +206,7 @@ public class GameNetworkCon : MonoBehaviour
             DoBroadcast = false,
             Rpc = new RPC
             {
-                PlayerId = NextSessionID++,
+                PlayerId = msg.SessionID,
                 RpcName = "SetPlayerID",
             }
         };
@@ -230,7 +223,12 @@ public class GameNetworkCon : MonoBehaviour
         var message = msg.GameSync;
 
         // 아직 호스트 유저로부터 번호 부여 안 받은 상태
-        if (playerID == 0)
+        if (playerID == -1)
+        {
+            return;
+        }
+
+        if(playerID == message.PlayerId)
         {
             return;
         }
@@ -241,15 +239,10 @@ public class GameNetworkCon : MonoBehaviour
         }
         else
         {
-            if (message.PlayerId == playerID)
-            {
-                return;
-            }
-
             var newPlayer = sceneController.SpawnPlayer(message);
             newPlayer.GetComponent<Player>().Sync(message);
-            newPlayer.GetComponent<Player>().UserName = message.UserName;
-            Players.Add(message.PlayerId, newPlayer);
+            newPlayer.GetComponent<Player>().UserName = message.UserName + "(" + message.PlayerId.ToString() + ")";
+            Players.TryAdd(message.PlayerId, newPlayer);
             Debug.Log("New player: " + message.UserName + "join to game");
         }
     }
@@ -266,6 +259,7 @@ public class GameNetworkCon : MonoBehaviour
             case "SetPlayerID":
                 {
                     playerID = message.PlayerId;
+                    GameManager.Instance.GamePlayer.GetComponent<Player>().UserName += $"({message.PlayerId})";
                 }
                 Debug.Log("Set Player ID: " + playerID);
                 break;
