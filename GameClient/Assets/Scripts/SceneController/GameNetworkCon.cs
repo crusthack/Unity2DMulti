@@ -184,7 +184,6 @@ public class GameNetworkCon : MonoBehaviour
 
         if (Players.TryGetValue(msg.SessionID, out var p))
         {
-            p.GetComponent<Player>().Sync(message);
         }
         else
         {
@@ -230,6 +229,7 @@ public class GameNetworkCon : MonoBehaviour
 
         if(playerID == message.PlayerId)
         {
+            GameManager.Instance.GamePlayer.GetComponent<Player>().Sync(message);
             return;
         }
 
