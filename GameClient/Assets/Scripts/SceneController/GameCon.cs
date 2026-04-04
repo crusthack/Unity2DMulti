@@ -100,6 +100,16 @@ public class SceneController : MonoBehaviour
         InputField.ActivateInputField();
     }
 
+    public GameObject SpawnPlayer(int prefabId, float x, float y)
+    {
+        var player = Instantiate(Player[prefabId]);
+        player.transform.position = new Vector2(x, y);
+        player.SetActive(true);
+        player.GetComponent<Player>().PrefabID = prefabId;
+
+        return player;
+    }
+
     public GameObject SpawnPlayer(SyncMessage message)
     {
         var player = Instantiate(Player[message.PrefabId]);
@@ -107,5 +117,11 @@ public class SceneController : MonoBehaviour
         player.SetActive(true);
 
         return player;
+    }
+
+    public void AddNotice(string payload)
+    {
+        var c = InputField.GetComponentInParent<Chatting>();
+        c.AddChatting(payload);
     }
 }

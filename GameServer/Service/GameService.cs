@@ -34,13 +34,16 @@ namespace GameServer.Service
         // 호스트 유저
         void ProcessHostsync(ClientSession session, GameMessage message, GameRoom room)
         {
-            Console.ForegroundColor = ConsoleColor.Blue;
-            Console.WriteLine($"from {session.SessionID}: {message}");
-            Console.ForegroundColor = ConsoleColor.White;
+            if (Owner.IsWatchSyncMessage())
+            {
+                Console.ForegroundColor = ConsoleColor.Cyan;
+                Console.WriteLine($"from {session.SessionID}: {message}");
+                Console.ForegroundColor = ConsoleColor.White;
+            }
 
             if (message.DoBroadcast)
             {
-                foreach(var player in room.Players)
+                foreach (var player in room.Players)
                 {
                     Owner.SendMessage(player, new ProtobufMessage(message, ProtobufMessage.OpCode.Game));
                 }
@@ -49,7 +52,7 @@ namespace GameServer.Service
             {
                 if (Owner.TryGetSession((uint)message.SessionID, out var s))
                 {
-                    Owner.SendMessage(s, new ProtobufMessage(message, ProtobufMessage.OpCode.Game));
+                    Owner.SendMessage(s!, new ProtobufMessage(message, ProtobufMessage.OpCode.Game));
                 }
             }
         }
@@ -61,7 +64,6 @@ namespace GameServer.Service
             message.UserName = session.UserName;
             Owner.SendMessage(room.Hostuser, new ProtobufMessage(message, ProtobufMessage.OpCode.Game));
         }
-
 
         // rpc 메시지
         public void ProcessRpcMessage(ClientSession session, GameMessage rpcMessage)
@@ -86,6 +88,9 @@ namespace GameServer.Service
         {
             if (message.DoBroadcast)
             {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine($"Send RPC message, from: {session.UserName}. to: Every Players. RPC: {message.Rpc.RpcName}. {message.Rpc.PlayerId}");
+                Console.ForegroundColor = ConsoleColor.White;
                 foreach (var player in room.Players)
                 {
                     Owner.SendMessage(player, new ProtobufMessage(message, ProtobufMessage.OpCode.Game));
@@ -95,9 +100,9 @@ namespace GameServer.Service
             {
                 if (Owner.TryGetSession((uint)message.SessionID, out var s))
                 {
-                    Owner.SendMessage(s, new ProtobufMessage(message, ProtobufMessage.OpCode.Game));
+                    Owner.SendMessage(s!, new ProtobufMessage(message, ProtobufMessage.OpCode.Game));
                     Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine($"Send RPC message, from: {session.UserName}. to: {s.UserName}. RPC: {message.Rpc.RpcName}. {message.Rpc.PlayerId}");
+                    Console.WriteLine($"Send RPC message, from: {session.UserName}. to: {s!.UserName}. RPC: {message.Rpc.RpcName}. {message.Rpc.PlayerId}");
                     Console.ForegroundColor = ConsoleColor.White;
                 }
             }
@@ -108,6 +113,11 @@ namespace GameServer.Service
         {
             message.SessionID = (int)session.SessionID;
             message.UserName = session.UserName;
+
+            Console.ForegroundColor = ConsoleColor.Magenta;
+            Console.WriteLine($"Send RPC message, from: {session.UserName}. to: {room.Hostuser.UserName}. RPC: {message.Rpc.RpcName}. {message.Rpc.PlayerId}");
+            Console.ForegroundColor = ConsoleColor.White;
+
             Owner.SendMessage(room.Hostuser, new ProtobufMessage(message, ProtobufMessage.OpCode.Game));
         }
     }

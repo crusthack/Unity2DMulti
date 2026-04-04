@@ -1,5 +1,6 @@
 using NetworkController.Message;
 using Protos;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
@@ -13,9 +14,9 @@ public class GameNetworkCon : MonoBehaviour
     public List<GameObject> scores;
 
     int playerID = -1; // hostUser = 0, unauthorized = -1
-    ConcurrentDictionary<int, GameObject> Players = new();    // key = sessionid
+    ConcurrentDictionary<int, GameObject> Players = new();    // key = sessionID;
 
-    public float SyncInterval = 1;
+    public float SyncInterval = 0.1f;
     private float lastSyncTime = 0;
 
     public SceneController sceneController;
@@ -40,7 +41,13 @@ public class GameNetworkCon : MonoBehaviour
         scoreboard.SetActive(true);
 
         Debug.Log(GameManager.Instance.Session.IsHost ? "This is host" : "This is guest");
+        sceneController.AddNotice(GameManager.Instance.Session.IsHost ? "This is host" : "This is guest");
+        if (!GameManager.Instance.Session.IsHost)
+        {
+            SendJoinMessage();
+        }
     }
+
 
     void Update()
     {
@@ -49,10 +56,55 @@ public class GameNetworkCon : MonoBehaviour
             return;
         }
 
+        // 이거 비효율적임. 
         UpdateScoreboard();
-        SendSyncMessage();
-        CheckVisibility();
     }
+
+    private void FixedUpdate()
+    {
+        if (GameManager.Instance.Session.IsHost)
+        {
+            SendSyncMessage();
+        }
+    }
+
+    void SendSyncMessage()
+    {
+        // 호스트 유저만 싱크 메시지 전파
+        if (Time.fixedTime - lastSyncTime < SyncInterval) return;
+        lastSyncTime = Time.fixedTime;
+        sceneController.AddNotice("Send Sync");
+
+        // 자신 게임의 상태를 송신
+        var s = GameManager.Instance.GamePlayer.GetComponent<Player>().GetSyncInfo();
+        s.PlayerId = playerID;
+
+        var g = new GameMessage
+        {
+            DoBroadcast = true,
+            GameSync = s
+        };
+
+        var message = new ProtobufMessage(g, ProtobufMessage.OpCode.Game);
+        GameManager.Instance.NetworkManager.SendMessage(message);
+
+        // 다른 유저들 상태 전파
+        foreach (var (i, p) in Players)
+        {
+            var info = p.GetComponent<Player>().GetSyncInfo();
+            info.PlayerId = i;
+
+            var gameMessage = new GameMessage
+            {
+                DoBroadcast = true,
+                GameSync = info
+            };
+
+            var msg = new ProtobufMessage(gameMessage, ProtobufMessage.OpCode.Game);
+            GameManager.Instance.NetworkManager.SendMessage(msg);
+        }
+    }
+
 
     void CheckVisibility()
     {
@@ -96,7 +148,9 @@ public class GameNetworkCon : MonoBehaviour
         foreach (var s in scores)
             if (s != null) s.SetActive(false);
 
-        for (int i = 0; i < players.Count && i < scores.Count; i++)
+        int t = Mathf.Min(players.Count, scores.Count);
+
+        for (int i = 0; i < t; i++)
         {
             if (scores[i] == null) continue;
 
@@ -105,45 +159,6 @@ public class GameNetworkCon : MonoBehaviour
                 $"{players[i].UserName}: {players[i].Score}";
 
             scores[i].SetActive(true);
-        }
-    }
-
-    void SendSyncMessage()
-    {
-        if (Time.time - lastSyncTime < SyncInterval)
-            return;
-
-        lastSyncTime = Time.time;
-
-        // 자신 게임의 상태를 송신
-        var s = GameManager.Instance.GamePlayer.GetComponent<Player>().GetSyncInfo();
-        s.PlayerId = playerID;
-        var g = new GameMessage
-        {
-            DoBroadcast = GameManager.Instance.Session.IsHost,
-            GameSync = s
-        };
-        var message = new ProtobufMessage(g, ProtobufMessage.OpCode.Game);
-        GameManager.Instance.NetworkManager.SendMessage(message);
-
-        // 호스트 유저라면 자기 컴퓨터에 있는 모든 유저들의 정보를 전파
-        if (GameManager.Instance.Session.IsHost)
-        {
-            foreach (var (i, p) in Players)
-            {
-                var info = p.GetComponent<Player>().GetSyncInfo();
-                info.PlayerId = i;
-
-                var gameMessage = new GameMessage
-                {
-                    DoBroadcast = true,
-                    GameSync = info
-                };
-
-                var msg = new ProtobufMessage(gameMessage, ProtobufMessage.OpCode.Game);
-                GameManager.Instance.NetworkManager.SendMessage(msg);
-                Debug.Log(gameMessage.ToString());
-            }
         }
     }
 
@@ -162,72 +177,19 @@ public class GameNetworkCon : MonoBehaviour
         switch (message.PayloadCase)
         {
             case GameMessage.PayloadOneofCase.GameSync:
-                if (GameManager.Instance.Session.IsHost)
-                {
-                    HostPlayerSyncGame(message);
-                }
-                else
-                {
-                    SyncGame(message);
-                }
+                SyncGame(message);
                 break;
             case GameMessage.PayloadOneofCase.Rpc:
-                HandleRPC(message.Rpc);
+                HandleRPC(message);
                 break;
         }
-    }
-
-    // 호스트 플레이어 전용 
-    void HostPlayerSyncGame(GameMessage msg)
-    {
-        var message = msg.GameSync;
-
-        if (Players.TryGetValue(msg.SessionID, out var p))
-        {
-        }
-        else
-        {
-            var newPlayer = sceneController.SpawnPlayer(message);
-            newPlayer.GetComponent<Player>().UserName = message.UserName;
-
-            newPlayer.GetComponent<Player>().Sync(message);
-            Players.TryAdd(msg.SessionID, newPlayer);
-            Debug.Log("New player: " + message.UserName + "join to game");
-            InitClient(msg);
-        }
-    }
-
-    int InitClient(GameMessage msg)
-    {
-        var g = new GameMessage
-        {
-            SessionID = msg.SessionID,
-            DoBroadcast = false,
-            Rpc = new RPC
-            {
-                PlayerId = msg.SessionID,
-                RpcName = "SetPlayerID",
-            }
-        };
-
-        Debug.Log(msg.SessionID + " New Client try To Join   " + g.Rpc.PlayerId);
-        Debug.Log($"Send Set Playr ID RPC to {g.SessionID}");
-        var m = new ProtobufMessage(g, ProtobufMessage.OpCode.Game);
-        GameManager.Instance.NetworkManager.SendMessage(m);
-        return g.Rpc.PlayerId;
     }
 
     void SyncGame(GameMessage msg)
     {
         var message = msg.GameSync;
 
-        // 아직 호스트 유저로부터 번호 부여 안 받은 상태
-        if (playerID == -1)
-        {
-            return;
-        }
-
-        if(playerID == message.PlayerId)
+        if (playerID == message.PlayerId)
         {
             GameManager.Instance.GamePlayer.GetComponent<Player>().Sync(message);
             return;
@@ -243,23 +205,22 @@ public class GameNetworkCon : MonoBehaviour
             newPlayer.GetComponent<Player>().Sync(message);
             newPlayer.GetComponent<Player>().UserName = message.UserName + "(" + message.PlayerId.ToString() + ")";
             Players.TryAdd(message.PlayerId, newPlayer);
-            Debug.Log("New player: " + message.UserName + "join to game");
+            Debug.Log("New player: " + message.UserName + " created");
+            sceneController.AddNotice("New player: " + message.UserName + " created");
         }
+        sceneController.AddNotice("[" + DateTime.UtcNow + "] Sync: " + message.PlayerId);
     }
 
-    void HandleRPC(RPC message)
+    void HandleRPC(GameMessage message)
     {
-        if (message.PlayerId == playerID)
-        {
-            return;
-        }
+        var rpc = message.Rpc;
 
-        switch (message.RpcName)
+        switch (rpc.RpcName)
         {
             case "SetPlayerID":
                 {
-                    playerID = message.PlayerId;
-                    GameManager.Instance.GamePlayer.GetComponent<Player>().UserName += $"({message.PlayerId})";
+                    playerID = rpc.PlayerId;
+                    GameManager.Instance.GamePlayer.GetComponent<Player>().UserName += $"({rpc.PlayerId})";
                 }
                 Debug.Log("Set Player ID: " + playerID);
                 break;
@@ -267,7 +228,10 @@ public class GameNetworkCon : MonoBehaviour
                 ProcessRPCMove(message);
                 break;
             case "Attack":
-                ProcessRPCAttack(message);
+                ProcessRPCAttack(rpc);
+                break;
+            case "Join":
+                ProcessJoin(message);
                 break;
         }
     }
@@ -288,28 +252,28 @@ public class GameNetworkCon : MonoBehaviour
             {
                 PlayerId = playerID,
                 RpcName = "Move",
-                Values = { x.ToString(), y.ToString() }
-            }
+                Values = { x.ToString(), y.ToString() },
+            },
+            DoBroadcast = GameManager.Instance.Session.IsHost,
         };
 
         if (GameManager.Instance.Session.IsHost)
-        {
-            g.DoBroadcast = true;
-        }
+            sceneController.AddNotice("Called RPC_Move");
 
         var m = new ProtobufMessage(g, ProtobufMessage.OpCode.Game);
         GameManager.Instance.NetworkManager.SendMessage(m);
     }
 
-    void ProcessRPCMove(RPC message)
+    void ProcessRPCMove(GameMessage message)
     {
-        if (!Players.TryGetValue(message.PlayerId, out var p))
+        var rpc = message.Rpc;
+        if (!Players.TryGetValue(rpc.PlayerId, out var p))
             return;
 
-        if (!float.TryParse(message.Values[0], NumberStyles.Float, CultureInfo.InvariantCulture, out var x))
+        if (!float.TryParse(rpc.Values[0], NumberStyles.Float, CultureInfo.InvariantCulture, out var x))
             return;
 
-        if (!float.TryParse(message.Values[1], NumberStyles.Float, CultureInfo.InvariantCulture, out var y))
+        if (!float.TryParse(rpc.Values[1], NumberStyles.Float, CultureInfo.InvariantCulture, out var y))
             return;
 
         p.GetComponent<Player>().MovDir = new Vector2(x, y);
@@ -320,8 +284,12 @@ public class GameNetworkCon : MonoBehaviour
                 new ProtobufMessage(new GameMessage
                 {
                     DoBroadcast = true,
-                    Rpc = message
+                    Rpc = rpc
                 }, ProtobufMessage.OpCode.Game));
+        }
+        else
+        {
+            sceneController.AddNotice("[" + DateTime.UtcNow + "] RPC Move" + rpc.PlayerId);
         }
     }
 
@@ -360,5 +328,66 @@ public class GameNetworkCon : MonoBehaviour
 
         GameManager.Instance.NetworkManager.SendMessage(
             new ProtobufMessage(g, ProtobufMessage.OpCode.Game));
+    }
+
+
+    void SendJoinMessage()
+    {
+        var g = new GameMessage
+        {
+            Rpc = new RPC
+            {
+                PlayerId = playerID,
+                RpcName = "Join",
+                Values = { GameManager.Instance.Session.GetUsername(), $"{GameManager.Instance.SelectedCharacterIndex}" },
+            }
+        };
+        sceneController.AddNotice("Join Message sent");
+
+        GameManager.Instance.NetworkManager.SendMessage(
+            new ProtobufMessage(g, ProtobufMessage.OpCode.Game));
+    }
+
+    void ProcessJoin(GameMessage message)
+    {
+        var rpc = message.Rpc;
+
+        if (rpc.PlayerId == -1)
+        {
+            if (!Int32.TryParse(rpc.Values[1], out var prefabId))
+            {
+                return;
+            }
+
+            var newPlayer = sceneController.SpawnPlayer(prefabId, 0, 0);
+            newPlayer.GetComponent<Player>().UserName = rpc.Values[0];
+
+            Players.TryAdd(message.SessionID, newPlayer);
+
+            var m = "New player: " + $"{message.SessionID}" + " join to game";
+            Debug.Log(m);
+            sceneController.AddNotice(m);
+            RPC_InitPlayer(message.SessionID);
+        }
+    }
+
+    int RPC_InitPlayer(int playerID)
+    {
+        var g = new GameMessage
+        {
+            SessionID = playerID,
+            DoBroadcast = false,
+            Rpc = new RPC
+            {
+                PlayerId = playerID,
+                RpcName = "SetPlayerID",
+            }
+        };
+
+        Debug.Log(playerID + " New Client try To Join   " + g.Rpc.PlayerId);
+        Debug.Log($"Send Set Playr ID RPC to {g.SessionID}");
+        var m = new ProtobufMessage(g, ProtobufMessage.OpCode.Game);
+        GameManager.Instance.NetworkManager.SendMessage(m);
+        return g.Rpc.PlayerId;
     }
 }

@@ -16,6 +16,7 @@ namespace GameServer
             Console.OutputEncoding = System.Text.Encoding.UTF8;
 
             Server server = new();
+            server.Start();
             bool running = true;
 
             PrintCommand();
@@ -39,6 +40,13 @@ namespace GameServer
                     case "quit":
                         running = false;
                         break;
+                    case "sync":
+                        server.SetWatchSyncMessage(!server.IsWatchSyncMessage());
+                        Console.WriteLine($"Watch Sync Message: {server.IsWatchSyncMessage()}");
+                        break;
+                    case "message":
+                        server.WatchMessage = !server.WatchMessage;
+                        break;
                     default:
                         PrintCommand();
                         break;
@@ -50,7 +58,7 @@ namespace GameServer
 
         static void PrintCommand()
         {
-            Console.WriteLine("Server Command List: start, stop, quit");
+            Console.WriteLine("Server Command List: start, stop, quit, message, sync");
         }
     }
 }

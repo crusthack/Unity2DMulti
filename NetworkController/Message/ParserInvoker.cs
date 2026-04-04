@@ -6,7 +6,7 @@ namespace NetworkController.Message
     // Uses reflection to find a static Parse(byte[] data, int size, out T message) method and a static GetMaxSize() method.
     static class ParserInvoker<T>
     {
-        delegate int ParseDelegate(byte[] data, int size, out T message);
+        delegate int ParseDelegate(byte[] data, int offset, int buffetDataSize, out T message);
         static readonly ParseDelegate _parse;
         static readonly Func<int> _getMaxSize;
 
@@ -30,9 +30,9 @@ namespace NetworkController.Message
             _getMaxSize = (Func<int>)Delegate.CreateDelegate(typeof(Func<int>), gms);
         }
 
-        public static int Parse(byte[] data, int size, out T message)
+        public static int Parse(byte[] data, int offset, int bufferDatasize, out T message)
         {
-            return _parse(data, size, out message);
+            return _parse(data, offset, bufferDatasize, out message);
         }
 
         public static int GetMaxSize()

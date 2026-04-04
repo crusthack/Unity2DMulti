@@ -1762,7 +1762,7 @@ MonoBehaviour:
   - {fileID: 7249302281680393883}
   - {fileID: 5282059653215255008}
   - {fileID: 5171829769613514641}
-  SyncInterval: 1
+  SyncInterval: 0.1
   sceneController: {fileID: 5010990855645004243}
 --- !u!1 &2378591368710978701
 GameObject:
@@ -5146,6 +5146,7 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_VertexColorAlwaysGammaSpace: 0
+  m_UseReflectionProbes: 0
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
@@ -5645,7 +5646,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0.000030517578}
+  m_AnchoredPosition: {x: 0, y: 0.000015258789}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 1, y: 1}
 --- !u!114 &8466092943086870871

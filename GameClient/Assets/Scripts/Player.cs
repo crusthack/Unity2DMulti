@@ -112,7 +112,9 @@ public class Player : MonoBehaviour
 
     public void Sync(SyncMessage m)
     {
+        var diff = transform.position - new Vector3 (m.PositionX, m.PositionY);
         transform.position = new Vector3(m.PositionX, m.PositionY);
+
         MovDir = new Vector2(m.MoveX, m.MoveY);
         CurrentMap = m.CurrentMap;
         PrefabID = m.PrefabId;

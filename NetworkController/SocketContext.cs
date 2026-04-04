@@ -108,7 +108,7 @@ namespace NetworkController
                 while (true)
                 {
                     T messageLocal = default(T);
-                    int parsed = ParserInvoker<T>.Parse(RecvBuf, RecvBufDataSize, out messageLocal);
+                    int parsed = ParserInvoker<T>.Parse(RecvBuf, RecvBufOffset , RecvBufDataSize, out messageLocal);
 
                     if (parsed < 0)
                     {
@@ -139,10 +139,21 @@ namespace NetworkController
                 // 버퍼에 메시지 하나를 수신할 공간이 부족하면 현재 유효 데이터를 앞으로 옮기고 오프셋 이동
                 else if (RecvBuf.Length - (RecvBufOffset + RecvBufDataSize) < ParserInvoker<T>.GetMaxSize())
                 {
-                    Console.WriteLine($"{RecvBuf.Length}, {RecvBufOffset}, {RecvBufDataSize}");
+                    Console.WriteLine($"remain memory is less than one message\n" +
+                        $"buf len: {RecvBuf.Length}, current offset: {RecvBufOffset}, current data size: {RecvBufDataSize}");
                     Buffer.BlockCopy(RecvBuf, RecvBufOffset, RecvBuf, 0, RecvBufDataSize);
-                    RecvBufOffset = RecvBufDataSize;
+                    RecvBufOffset = 0;
+
+                    Console.WriteLine("Try Parse");
+                    int parsed = ParserInvoker<T>.Parse(RecvBuf, RecvBufOffset, RecvBufDataSize, out var messageLocal);
+                    Console.WriteLine($"Parsed: {parsed}");
+
+                    if (messageLocal != null && OnReceiveMessage != null) OnReceiveMessage(this, messageLocal);
+
+                    RecvBufOffset += parsed;
+                    RecvBufDataSize -= parsed;
                 }
+                // 이동했음에도 여유 공간이 부족할 경우가 있음. 이 경우 메시지를 소비하고서 이동 시도하여야 함.
 
                 RecvArgs.SetBuffer(
                     RecvBufOffset + RecvBufDataSize,

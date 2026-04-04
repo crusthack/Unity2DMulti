@@ -61,21 +61,16 @@ namespace NetworkController.Message
             return total;
         }
 
-        public static int Parse(byte[] data, int size, out ProtobufMessage msg)
+        public static int Parse(byte[] data, int bufOffset, int size, out ProtobufMessage msg)
         {
-            var offset = ProtobufMessageHeader.Parse(data, size, out var header);
-            if (offset == -1)
-            {
-                msg = null;
-                return -1;
-            }
-            if (offset == 0 || header == null)
-            {
-                msg = null;
-                return 0;
-            }
+            // bufOffset 위치부터 헤더 파싱
+            var headerRead = ProtobufMessageHeader.Parse(data, bufOffset, size, out var header);
+
+            if (headerRead == -1) { msg = null; return -1; }
+            if (headerRead == 0 || header == null) { msg = null; return 0; }
 
             var messageHeader = header as ProtobufMessageHeader;
+
             if (size < ProtobufMessageHeader.HeaderSize + messageHeader.PayloadSize)
             {
                 msg = null;
@@ -84,19 +79,23 @@ namespace NetworkController.Message
 
             try
             {
-                var payloadBytes = new byte[messageHeader.PayloadSize];
-            Buffer.BlockCopy(data, ProtobufMessageHeader.HeaderSize, payloadBytes, 0, messageHeader.PayloadSize);
-            var payload = ProtobufParserRegistry.Parse(messageHeader.OpCode, payloadBytes);
-            msg = new ProtobufMessage(payload, (OpCode)messageHeader.OpCode);
+                int payloadOffset = bufOffset + ProtobufMessageHeader.HeaderSize;
 
-            return ProtobufMessageHeader.HeaderSize + messageHeader.PayloadSize;
+                var payload = ProtobufParserRegistry.Parse(
+                    messageHeader.OpCode,
+                    data,
+                    payloadOffset,
+                    messageHeader.PayloadSize
+                );
+
+                msg = new ProtobufMessage(payload, (OpCode)messageHeader.OpCode);
+
+                return ProtobufMessageHeader.HeaderSize + messageHeader.PayloadSize;
             }
             catch (Exception ex)
             {
-                Console.ForegroundColor = ConsoleColor.Blue;
-                Console.WriteLine(messageHeader.PayloadSize);
-                Console.ForegroundColor = ConsoleColor.White;
-                throw new Exception("!!!");
+                Console.WriteLine($"Parse Error: Offset={bufOffset}, PayloadSize={messageHeader.PayloadSize}");
+                throw;
             }
         }
     }
@@ -135,7 +134,7 @@ namespace NetworkController.Message
 
             return HeaderSize;
         }
-        static public int Parse(byte[] buffer, int size, out IMessageHeader header)
+        static public int Parse(byte[] buffer, int offset, int size, out IMessageHeader header)
         {
             if (size < HeaderSize)
             {
@@ -143,10 +142,10 @@ namespace NetworkController.Message
                 return 0;
             }
 
-            int payloadSize = ReadInt32LE(buffer, 0);
-            int opCode = ReadInt32LE(buffer, 4);
-            long timeStamp = ReadInt64LE(buffer, 8);
-            int checkKey = ReadInt32LE(buffer, 16);
+            int payloadSize = ReadInt32LE(buffer, offset);
+            int opCode = ReadInt32LE(buffer, offset + 4);
+            long timeStamp = ReadInt64LE(buffer, offset + 8);
+            int checkKey = ReadInt32LE(buffer, offset + 16);
             header = new ProtobufMessageHeader(payloadSize, opCode, timeStamp, checkKey);
             if (checkKey != CheckKey)
             {
@@ -206,17 +205,17 @@ namespace NetworkController.Message
 
     static class ProtobufParserRegistry
     {
-        static readonly Dictionary<Int32, Func<byte[], IMessage>> Parsers = new Dictionary<int, Func<byte[], IMessage>>() {
-            { (Int32)ProtobufMessage.OpCode.System, (b) => SystemMessage.Parser.ParseFrom(b) },
-            { (Int32)ProtobufMessage.OpCode.Chatting, (b) => ChattingMessage.Parser.ParseFrom(b) },
-            { (Int32)ProtobufMessage.OpCode.Room, (b) => RoomMessage.Parser.ParseFrom(b)  },
-            { (Int32)ProtobufMessage.OpCode.Game, (b) => GameMessage.Parser.ParseFrom(b)  },
+        static readonly Dictionary<Int32, Func<byte[], int, int, IMessage>> Parsers = new Dictionary<int, Func<byte[], int, int, IMessage>>() {
+            { (Int32)ProtobufMessage.OpCode.System, (b, o, l) => SystemMessage.Parser.ParseFrom(b, o, l) },
+            { (Int32)ProtobufMessage.OpCode.Chatting, (b, o, l) => ChattingMessage.Parser.ParseFrom(b, o, l) },
+            { (Int32)ProtobufMessage.OpCode.Room, (b, o, l) => RoomMessage.Parser.ParseFrom(b, o, l)  },
+            { (Int32)ProtobufMessage.OpCode.Game, (b, o, l) => GameMessage.Parser.ParseFrom(b, o, l)  },
 
         };
 
-        public static IMessage Parse(Int32 opcode, byte[] payload)
+        public static IMessage Parse(Int32 opcode, byte[] payload, int offset, int length)
         {
-            return Parsers[opcode](payload);
+            return Parsers[opcode](payload, offset, length);
         }
     }
 }

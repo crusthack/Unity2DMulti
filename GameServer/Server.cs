@@ -31,6 +31,17 @@ namespace GameServer
         public GameRoomService GameRoomService;
         public GameService GameService;
 
+        private bool WatchSyncMessage = false;
+        bool _WatchMessage = false;
+        public bool WatchMessage
+        {
+            get => _WatchMessage;
+            set
+            {
+                _WatchMessage = value;
+            }
+        }
+
         public Server()
         {
             Netcon = new NetworkController<ProtobufMessage>();
@@ -181,7 +192,11 @@ namespace GameServer
 
         public void SendMessage(ClientSession session, ProtobufMessage message)
         {
-            Console.WriteLine($"Send Message To {session.SessionID}, message type: {message.Header.OpCode.ToString()}, messasge size: {message.GetSize()}");
+            if (_WatchMessage)
+            {
+                Console.WriteLine($"Send Message To {session.SessionID}, message type: {message.Header.OpCode.ToString()}, messasge size: {message.GetSize()}");
+            }
+
             try
             {
                 Netcon.SendMessageTo(session.SessionID, message);
@@ -189,7 +204,18 @@ namespace GameServer
             catch (Exception e)
             {
                 // 없는 세션에 송신 시도
+                Console.WriteLine($"Failed to send message to session {session.SessionID}: {e.Message}");
             }
+        }
+
+        public void SetWatchSyncMessage(bool watch)
+        {
+            WatchSyncMessage = watch;
+        }
+
+        public bool IsWatchSyncMessage()
+        {
+            return WatchSyncMessage;
         }
     }
 }

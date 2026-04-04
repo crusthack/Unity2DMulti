@@ -39,7 +39,7 @@ namespace NetworkController.Message
             return bytes.Length;
         }
 
-        public static int Parse(byte[] data, Int32 size, out BaseMessage message)
+        public static int Parse(byte[] data, int bufOffset, Int32 size, out BaseMessage message)
         {
             string m = Encoding.UTF8.GetString(data, 0, size);
             message = new BaseMessage(m);
