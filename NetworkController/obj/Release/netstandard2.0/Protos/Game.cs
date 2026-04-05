@@ -29,7 +29,7 @@ namespace Protos {
             "GAMgASgIEiEKCWdhbWVfc3luYxgEIAEoCzIMLlN5bmNNZXNzYWdlSAASEwoD",
             "cnBjGAUgASgLMgQuUlBDSABCCQoHUGF5bG9hZCKyAQoLU3luY01lc3NhZ2US",
             "EQoJcGxheWVyX2lkGAEgASgFEhEKCXByZWZhYl9pZBgCIAEoBRISCgpwb3Np",
-            "dGlvbl94GAMgASgFEhIKCnBvc2l0aW9uX3kYBCABKAUSDgoGbW92ZV94GAUg",
+            "dGlvbl94GAMgASgCEhIKCnBvc2l0aW9uX3kYBCABKAISDgoGbW92ZV94GAUg",
             "ASgFEg4KBm1vdmVfeRgGIAEoBRITCgtjdXJyZW50X21hcBgHIAEoCRIRCgl1",
             "c2VyX25hbWUYCCABKAkSDQoFc2NvcmUYCSABKAUiOgoDUlBDEhEKCXBsYXll",
             "cl9pZBgBIAEoBRIQCghycGNfbmFtZRgCIAEoCRIOCgZ2YWx1ZXMYAyADKAlC",
@@ -530,10 +530,10 @@ namespace Protos {
 
     /// <summary>Field number for the "position_x" field.</summary>
     public const int PositionXFieldNumber = 3;
-    private int positionX_;
+    private float positionX_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public int PositionX {
+    public float PositionX {
       get { return positionX_; }
       set {
         positionX_ = value;
@@ -542,10 +542,10 @@ namespace Protos {
 
     /// <summary>Field number for the "position_y" field.</summary>
     public const int PositionYFieldNumber = 4;
-    private int positionY_;
+    private float positionY_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public int PositionY {
+    public float PositionY {
       get { return positionY_; }
       set {
         positionY_ = value;
@@ -629,8 +629,8 @@ namespace Protos {
       }
       if (PlayerId != other.PlayerId) return false;
       if (PrefabId != other.PrefabId) return false;
-      if (PositionX != other.PositionX) return false;
-      if (PositionY != other.PositionY) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(PositionX, other.PositionX)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(PositionY, other.PositionY)) return false;
       if (MoveX != other.MoveX) return false;
       if (MoveY != other.MoveY) return false;
       if (CurrentMap != other.CurrentMap) return false;
@@ -645,8 +645,8 @@ namespace Protos {
       int hash = 1;
       if (PlayerId != 0) hash ^= PlayerId.GetHashCode();
       if (PrefabId != 0) hash ^= PrefabId.GetHashCode();
-      if (PositionX != 0) hash ^= PositionX.GetHashCode();
-      if (PositionY != 0) hash ^= PositionY.GetHashCode();
+      if (PositionX != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(PositionX);
+      if (PositionY != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(PositionY);
       if (MoveX != 0) hash ^= MoveX.GetHashCode();
       if (MoveY != 0) hash ^= MoveY.GetHashCode();
       if (CurrentMap.Length != 0) hash ^= CurrentMap.GetHashCode();
@@ -678,13 +678,13 @@ namespace Protos {
         output.WriteRawTag(16);
         output.WriteInt32(PrefabId);
       }
-      if (PositionX != 0) {
-        output.WriteRawTag(24);
-        output.WriteInt32(PositionX);
+      if (PositionX != 0F) {
+        output.WriteRawTag(29);
+        output.WriteFloat(PositionX);
       }
-      if (PositionY != 0) {
-        output.WriteRawTag(32);
-        output.WriteInt32(PositionY);
+      if (PositionY != 0F) {
+        output.WriteRawTag(37);
+        output.WriteFloat(PositionY);
       }
       if (MoveX != 0) {
         output.WriteRawTag(40);
@@ -724,13 +724,13 @@ namespace Protos {
         output.WriteRawTag(16);
         output.WriteInt32(PrefabId);
       }
-      if (PositionX != 0) {
-        output.WriteRawTag(24);
-        output.WriteInt32(PositionX);
+      if (PositionX != 0F) {
+        output.WriteRawTag(29);
+        output.WriteFloat(PositionX);
       }
-      if (PositionY != 0) {
-        output.WriteRawTag(32);
-        output.WriteInt32(PositionY);
+      if (PositionY != 0F) {
+        output.WriteRawTag(37);
+        output.WriteFloat(PositionY);
       }
       if (MoveX != 0) {
         output.WriteRawTag(40);
@@ -768,11 +768,11 @@ namespace Protos {
       if (PrefabId != 0) {
         size += 1 + pb::CodedOutputStream.ComputeInt32Size(PrefabId);
       }
-      if (PositionX != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeInt32Size(PositionX);
+      if (PositionX != 0F) {
+        size += 1 + 4;
       }
-      if (PositionY != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeInt32Size(PositionY);
+      if (PositionY != 0F) {
+        size += 1 + 4;
       }
       if (MoveX != 0) {
         size += 1 + pb::CodedOutputStream.ComputeInt32Size(MoveX);
@@ -807,10 +807,10 @@ namespace Protos {
       if (other.PrefabId != 0) {
         PrefabId = other.PrefabId;
       }
-      if (other.PositionX != 0) {
+      if (other.PositionX != 0F) {
         PositionX = other.PositionX;
       }
-      if (other.PositionY != 0) {
+      if (other.PositionY != 0F) {
         PositionY = other.PositionY;
       }
       if (other.MoveX != 0) {
@@ -855,12 +855,12 @@ namespace Protos {
             PrefabId = input.ReadInt32();
             break;
           }
-          case 24: {
-            PositionX = input.ReadInt32();
+          case 29: {
+            PositionX = input.ReadFloat();
             break;
           }
-          case 32: {
-            PositionY = input.ReadInt32();
+          case 37: {
+            PositionY = input.ReadFloat();
             break;
           }
           case 40: {
@@ -910,12 +910,12 @@ namespace Protos {
             PrefabId = input.ReadInt32();
             break;
           }
-          case 24: {
-            PositionX = input.ReadInt32();
+          case 29: {
+            PositionX = input.ReadFloat();
             break;
           }
-          case 32: {
-            PositionY = input.ReadInt32();
+          case 37: {
+            PositionY = input.ReadFloat();
             break;
           }
           case 40: {

@@ -56,24 +56,21 @@ public class GameNetworkCon : MonoBehaviour
             return;
         }
 
-        // 이거 비효율적임. 
+        // 이거 비효율적임. 매우
         UpdateScoreboard();
     }
 
     private void FixedUpdate()
     {
-        if (GameManager.Instance.Session.IsHost)
-        {
+        if(GameManager.Instance.Session.IsHost || playerID != -1)
             SendSyncMessage();
-        }
     }
 
     void SendSyncMessage()
     {
-        // 호스트 유저만 싱크 메시지 전파
         if (Time.fixedTime - lastSyncTime < SyncInterval) return;
         lastSyncTime = Time.fixedTime;
-        sceneController.AddNotice("Send Sync");
+        sceneController.AddNotice("[" + DateTime.UtcNow + "] Send Sync");
 
         // 자신 게임의 상태를 송신
         var s = GameManager.Instance.GamePlayer.GetComponent<Player>().GetSyncInfo();
@@ -81,27 +78,30 @@ public class GameNetworkCon : MonoBehaviour
 
         var g = new GameMessage
         {
-            DoBroadcast = true,
+            DoBroadcast = GameManager.Instance.Session.IsHost,
             GameSync = s
         };
 
         var message = new ProtobufMessage(g, ProtobufMessage.OpCode.Game);
         GameManager.Instance.NetworkManager.SendMessage(message);
 
-        // 다른 유저들 상태 전파
-        foreach (var (i, p) in Players)
+        if (GameManager.Instance.Session.IsHost)
         {
-            var info = p.GetComponent<Player>().GetSyncInfo();
-            info.PlayerId = i;
-
-            var gameMessage = new GameMessage
+            // 다른 유저들 상태 전파
+            foreach (var (i, p) in Players)
             {
-                DoBroadcast = true,
-                GameSync = info
-            };
+                var info = p.GetComponent<Player>().GetSyncInfo();
+                info.PlayerId = i;
 
-            var msg = new ProtobufMessage(gameMessage, ProtobufMessage.OpCode.Game);
-            GameManager.Instance.NetworkManager.SendMessage(msg);
+                var gameMessage = new GameMessage
+                {
+                    DoBroadcast = true,
+                    GameSync = info
+                };
+
+                var msg = new ProtobufMessage(gameMessage, ProtobufMessage.OpCode.Game);
+                GameManager.Instance.NetworkManager.SendMessage(msg);
+            }
         }
     }
 
@@ -191,8 +191,8 @@ public class GameNetworkCon : MonoBehaviour
 
         if (playerID == message.PlayerId)
         {
-            GameManager.Instance.GamePlayer.GetComponent<Player>().Sync(message);
             return;
+            GameManager.Instance.GamePlayer.GetComponent<Player>().Sync(message);
         }
 
         if (Players.TryGetValue(message.PlayerId, out var p))
@@ -208,7 +208,6 @@ public class GameNetworkCon : MonoBehaviour
             Debug.Log("New player: " + message.UserName + " created");
             sceneController.AddNotice("New player: " + message.UserName + " created");
         }
-        sceneController.AddNotice("[" + DateTime.UtcNow + "] Sync: " + message.PlayerId);
     }
 
     void HandleRPC(GameMessage message)
@@ -278,6 +277,7 @@ public class GameNetworkCon : MonoBehaviour
 
         p.GetComponent<Player>().MovDir = new Vector2(x, y);
 
+        // 호스트 유저면 rpc 전파
         if (GameManager.Instance.Session.IsHost)
         {
             GameManager.Instance.NetworkManager.SendMessage(
@@ -286,10 +286,6 @@ public class GameNetworkCon : MonoBehaviour
                     DoBroadcast = true,
                     Rpc = rpc
                 }, ProtobufMessage.OpCode.Game));
-        }
-        else
-        {
-            sceneController.AddNotice("[" + DateTime.UtcNow + "] RPC Move" + rpc.PlayerId);
         }
     }
 

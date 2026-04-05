@@ -17,21 +17,28 @@ public class Player : MonoBehaviour
 
     public PlayerInput Input;
 
+    private Vector3? targetPosition;
+    private Rigidbody2D rb;
+
+    Vector3 lastSyncPosition;
+
     void Awake()
     {
         Skill = GetComponent<SkillSystem>();
         Input = GetComponent<PlayerInput>();
         DisableInput();
         PrefabID = GameManager.Instance.SelectedCharacterIndex;
+
+        rb = GetComponent<Rigidbody2D>();
+
+        Skill = GetComponent<SkillSystem>();
+        Input = GetComponent<PlayerInput>();
+        targetPosition = null;
     }
 
     public void AddScore(float value)
     {
         Score += value * BonusScoreMultiplier;
-    }
-
-    public void Update()
-    {
     }
 
     public float BonusScoreMultiplier = 1.0f;
@@ -40,6 +47,11 @@ public class Player : MonoBehaviour
     {
         var movement = new Vector3(MovDir.x, MovDir.y, 0) * Speed * Time.fixedDeltaTime;
         transform.Translate(movement, Space.World);
+
+        if(targetPosition != null)
+        {
+            transform.position = Vector3.Lerp(transform.position, (Vector3)targetPosition, Time.fixedDeltaTime * 15f);
+        }
     }
 
     public void OnMove(InputValue value)
@@ -98,8 +110,8 @@ public class Player : MonoBehaviour
         {
             PlayerId = 0,
             PrefabId = PrefabID,
-            PositionX = (int)transform.position.x,
-            PositionY = (int)transform.position.y,
+            PositionX = transform.position.x,
+            PositionY = transform.position.y,
             MoveX = (int)MovDir.x,  
             MoveY = (int)MovDir.y,
             CurrentMap = CurrentMap,
@@ -112,12 +124,24 @@ public class Player : MonoBehaviour
 
     public void Sync(SyncMessage m)
     {
-        var diff = transform.position - new Vector3 (m.PositionX, m.PositionY);
-        transform.position = new Vector3(m.PositionX, m.PositionY);
+        Vector3 receivedPos = new Vector3(m.PositionX, m.PositionY, 0);
+        var sqrdistance = (transform.position - receivedPos).sqrMagnitude;
 
-        MovDir = new Vector2(m.MoveX, m.MoveY);
+        if (sqrdistance> 6f) 
+        {
+            transform.position = receivedPos;
+            targetPosition = receivedPos;
+        }
+        else if (sqrdistance < 1f)
+        {
+            targetPosition = null;
+        }
+        else
+        {
+            targetPosition = receivedPos;
+        }
+
         CurrentMap = m.CurrentMap;
-        PrefabID = m.PrefabId;
         Score = m.Score;
     }
 }

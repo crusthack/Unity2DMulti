@@ -15,8 +15,8 @@ message GameMessage{
 message SyncMessage{
 	int32 player_id = 1;
 	int32 prefab_id = 2;
-	int32 position_x = 3;
-	int32 position_y = 4;
+	float position_x = 3;
+	float position_y = 4;
 	int32 move_x = 5;
 	int32 move_y= 6;
 	string current_map = 7;
