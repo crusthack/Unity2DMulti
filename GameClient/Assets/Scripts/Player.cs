@@ -45,19 +45,59 @@ public class Player : MonoBehaviour
 
     void FixedUpdate()
     {
-        var movement = new Vector3(MovDir.x, MovDir.y, 0) * Speed * Time.fixedDeltaTime;
-        transform.Translate(movement, Space.World);
+        Vector3 movDir = Vector3.zero;
 
         if (targetPosition != null)
         {
-            transform.position = Vector3.Lerp(transform.position, (Vector3)targetPosition, Time.fixedDeltaTime * 2f);
+            Vector3 target = (Vector3)targetPosition + new Vector3(MovDir.x, MovDir.y) * Speed * Time.fixedDeltaTime;
+            float distance = Vector3.Distance(transform.position, target);
+
+            float step = Speed * Time.fixedDeltaTime;
+
+            if (distance <= step)
+            {
+                transform.position  = target;
+                targetPosition = null;
+            }
+            else
+            {
+                movDir = target - transform.position;
+            }
         }
+        else
+        {
+            movDir = new Vector3(MovDir.x, MovDir.y, 0);
+        }
+
+        var movement = movDir.normalized * Speed *Time.fixedDeltaTime;
+
+         transform.Translate(movement, Space.World);
     }
 
     public void OnMove(InputValue value)
     {
         var movVec = value.Get<Vector2>();
-        MovDir = movVec.normalized;
+        Move(movVec);
+        GameManager.Instance.NetworkCon?.RPC_Move(value, transform.position);
+    }
+
+    public void Move(Vector2 dir)
+    {
+        MovDir = dir.normalized;
+        if (MovDir.x < 0)
+        {
+            IsLookingRight = false;
+
+        }
+        else if (MovDir.x > 0)
+        {
+            IsLookingRight = true;
+        }
+    }
+
+    public void Move(Vector2 dir, Vector2 targetPos)
+    {
+        MovDir = dir.normalized;
         if (MovDir.x < 0)
         {
             IsLookingRight = false;
@@ -68,7 +108,13 @@ public class Player : MonoBehaviour
             IsLookingRight = true;
         }
 
-        GameManager.Instance.NetworkCon?.RPC_Move(value);
+        Vector2 pos = transform.position;
+        var distance = targetPos - pos;
+        if(distance.sqrMagnitude > 1f)
+        {
+            transform.position = targetPos;
+        }
+        targetPosition = targetPos;
     }
 
     public void OnAttack()
@@ -127,11 +173,13 @@ public class Player : MonoBehaviour
         Vector3 receivedPos = new Vector3(m.PositionX, m.PositionY, 0);
         var sqrdistance = (transform.position - receivedPos).sqrMagnitude;
 
-        if (sqrdistance > 6f)
-        {
+        if (sqrdistance > 1 || MovDir.sqrMagnitude == 0)
             transform.position = receivedPos;
-        }
-        targetPosition = receivedPos;
+
+        //if (sqrdistance > 6f)
+        //{
+        //}
+        //targetPosition = receivedPos;
 
         CurrentMap = m.CurrentMap;
         Score = m.Score;

@@ -234,7 +234,7 @@ public class GameNetworkCon : MonoBehaviour
         }
     }
 
-    public void RPC_Move(InputValue value)
+    public void RPC_Move(InputValue value, Vector2 position)
     {
         if (!GameManager.Instance.Session.IsMulti)
         {
@@ -243,6 +243,8 @@ public class GameNetworkCon : MonoBehaviour
 
         var x = value.Get<Vector2>().x;
         var y = value.Get<Vector2>().y;
+        var position_x = position.x;
+        var position_y = position.y;
 
         var g = new GameMessage
         {
@@ -250,7 +252,7 @@ public class GameNetworkCon : MonoBehaviour
             {
                 PlayerId = playerID,
                 RpcName = "Move",
-                Values = { x.ToString(), y.ToString() },
+                Values = { x.ToString(), y.ToString(), position_x.ToString(), position_y.ToString() },
             },
             DoBroadcast = GameManager.Instance.Session.IsHost,
         };
@@ -274,7 +276,13 @@ public class GameNetworkCon : MonoBehaviour
         if (!float.TryParse(rpc.Values[1], NumberStyles.Float, CultureInfo.InvariantCulture, out var y))
             return;
 
-        p.GetComponent<Player>().MovDir = new Vector2(x, y);
+        if (!float.TryParse(rpc.Values[2], NumberStyles.Float, CultureInfo.InvariantCulture, out var position_x))
+            return;
+
+        if (!float.TryParse(rpc.Values[3], NumberStyles.Float, CultureInfo.InvariantCulture, out var position_y))
+            return;
+
+        p.GetComponent<Player>().Move(new Vector2(x, y), new Vector2(position_x, position_y));
 
         // 호스트 유저면 rpc 전파
         if (GameManager.Instance.Session.IsHost)
