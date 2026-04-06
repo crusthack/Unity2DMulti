@@ -1762,7 +1762,7 @@ MonoBehaviour:
   - {fileID: 7249302281680393883}
   - {fileID: 5282059653215255008}
   - {fileID: 5171829769613514641}
-  SyncInterval: 0.1
+  SyncInterval: 0.2
   sceneController: {fileID: 5010990855645004243}
 --- !u!1 &2378591368710978701
 GameObject:

@@ -48,9 +48,9 @@ public class Player : MonoBehaviour
         var movement = new Vector3(MovDir.x, MovDir.y, 0) * Speed * Time.fixedDeltaTime;
         transform.Translate(movement, Space.World);
 
-        if(targetPosition != null)
+        if (targetPosition != null)
         {
-            transform.position = Vector3.Lerp(transform.position, (Vector3)targetPosition, Time.fixedDeltaTime * 15f);
+            transform.position = Vector3.Lerp(transform.position, (Vector3)targetPosition, Time.fixedDeltaTime * 2f);
         }
     }
 
@@ -112,7 +112,7 @@ public class Player : MonoBehaviour
             PrefabId = PrefabID,
             PositionX = transform.position.x,
             PositionY = transform.position.y,
-            MoveX = (int)MovDir.x,  
+            MoveX = (int)MovDir.x,
             MoveY = (int)MovDir.y,
             CurrentMap = CurrentMap,
             UserName = UserName,
@@ -127,19 +127,11 @@ public class Player : MonoBehaviour
         Vector3 receivedPos = new Vector3(m.PositionX, m.PositionY, 0);
         var sqrdistance = (transform.position - receivedPos).sqrMagnitude;
 
-        if (sqrdistance> 6f) 
+        if (sqrdistance > 6f)
         {
             transform.position = receivedPos;
-            targetPosition = receivedPos;
         }
-        else if (sqrdistance < 1f)
-        {
-            targetPosition = null;
-        }
-        else
-        {
-            targetPosition = receivedPos;
-        }
+        targetPosition = receivedPos;
 
         CurrentMap = m.CurrentMap;
         Score = m.Score;

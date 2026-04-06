@@ -75,6 +75,8 @@ namespace GameServer
 
         public void Start()
         {
+            if(IsRunning) return;
+
             Netcon.OpenServer(new System.Net.IPEndPoint(System.Net.IPAddress.Loopback, 5000));
             Console.WriteLine($"Server start running, IP: 127.0.0.1, Port: 5000");
             IsRunning = true;

@@ -16,7 +16,7 @@ public class GameNetworkCon : MonoBehaviour
     int playerID = -1; // hostUser = 0, unauthorized = -1
     ConcurrentDictionary<int, GameObject> Players = new();    // key = sessionID;
 
-    public float SyncInterval = 0.1f;
+    public float SyncInterval = 0.1f;   // n sec
     private float lastSyncTime = 0;
 
     public SceneController sceneController;
@@ -62,13 +62,12 @@ public class GameNetworkCon : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if(GameManager.Instance.Session.IsHost || playerID != -1)
-            SendSyncMessage();
+        SendSyncMessage();
     }
 
-    void SendSyncMessage()
+    void SendSyncMessage(bool sync = false)
     {
-        if (Time.fixedTime - lastSyncTime < SyncInterval) return;
+        if (Time.fixedTime - lastSyncTime < SyncInterval && !sync) return;
         lastSyncTime = Time.fixedTime;
         sceneController.AddNotice("[" + DateTime.UtcNow + "] Send Sync");
 
@@ -102,6 +101,31 @@ public class GameNetworkCon : MonoBehaviour
                 var msg = new ProtobufMessage(gameMessage, ProtobufMessage.OpCode.Game);
                 GameManager.Instance.NetworkManager.SendMessage(msg);
             }
+        }
+    }
+
+    void SyncGame(GameMessage msg)
+    {
+        var message = msg.GameSync;
+
+        if (playerID == message.PlayerId)
+        {
+            return;
+        }
+
+        if (Players.TryGetValue(message.PlayerId, out var p))
+        {
+            p.GetComponent<Player>().Sync(message);
+            sceneController.AddNotice("Player: " + message.UserName + " synced");
+        }
+        else
+        {
+            var newPlayer = sceneController.SpawnPlayer(message);
+            newPlayer.GetComponent<Player>().Sync(message);
+            newPlayer.GetComponent<Player>().UserName = message.UserName + "(" + message.PlayerId.ToString() + ")";
+            Players.TryAdd(message.PlayerId, newPlayer);
+            Debug.Log("New player: " + message.UserName + " created");
+            sceneController.AddNotice("New player: " + message.UserName + " created");
         }
     }
 
@@ -182,31 +206,6 @@ public class GameNetworkCon : MonoBehaviour
             case GameMessage.PayloadOneofCase.Rpc:
                 HandleRPC(message);
                 break;
-        }
-    }
-
-    void SyncGame(GameMessage msg)
-    {
-        var message = msg.GameSync;
-
-        if (playerID == message.PlayerId)
-        {
-            return;
-            GameManager.Instance.GamePlayer.GetComponent<Player>().Sync(message);
-        }
-
-        if (Players.TryGetValue(message.PlayerId, out var p))
-        {
-            p.GetComponent<Player>().Sync(message);
-        }
-        else
-        {
-            var newPlayer = sceneController.SpawnPlayer(message);
-            newPlayer.GetComponent<Player>().Sync(message);
-            newPlayer.GetComponent<Player>().UserName = message.UserName + "(" + message.PlayerId.ToString() + ")";
-            Players.TryAdd(message.PlayerId, newPlayer);
-            Debug.Log("New player: " + message.UserName + " created");
-            sceneController.AddNotice("New player: " + message.UserName + " created");
         }
     }
 
@@ -364,6 +363,10 @@ public class GameNetworkCon : MonoBehaviour
             Debug.Log(m);
             sceneController.AddNotice(m);
             RPC_InitPlayer(message.SessionID);
+            if(GameManager.Instance.Session.IsHost)
+            {
+                SendSyncMessage(true);
+            }
         }
     }
 
